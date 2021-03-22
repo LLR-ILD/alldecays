@@ -1,0 +1,13 @@
+black
+flake8
+iminuit
+jupyter
+matplotlib
+numexpr
+numpy
+pandas
+pre-commit
+pytest
+scipy
+tqdm
+uproot
