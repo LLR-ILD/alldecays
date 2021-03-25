@@ -12,7 +12,6 @@ extras_require["example"] = sorted(
     {
         "jupyter",
         "numexpr",
-        "pandas",
         "uproot",
     }
 )
