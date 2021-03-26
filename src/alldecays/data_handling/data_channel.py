@@ -227,7 +227,6 @@ class _DataChannel:
     def get_toys(self, size=None, data_brs=None, rng=None):
         expected_counts = self.get_expected_counts(data_brs)
         n_data = int(sum(expected_counts))
-        print(f"{n_data=}")
         box_probabilities = expected_counts / sum(expected_counts)
         if rng is None:
             rng = np.random.default_rng()

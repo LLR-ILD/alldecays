@@ -4,7 +4,15 @@ from .data_set import DataSetError
 
 
 class CombinedDataSet:
-    """Convenience wrapper around multiple `DataSet` objects."""
+    """Convenience wrapper around multiple `DataSet` objects.
+
+    Example:
+        >>> import alldecays
+        >>> isinstance(ds1, alldecays.DataSet) and isinstance(ds2, alldecays.DataSet)
+        True
+        >>> combined = alldecays.CombinedDataSet(decay_names, {"ds1": ds1})
+        >>> combined.add_data_sets({"ds2": ds2})
+    """
 
     def __init__(
         self,
@@ -105,6 +113,6 @@ class CombinedDataSet:
         text = f"{self.__class__.__name__} with {n_channels} channels.\n"
         text += f"  {n_data_sets} DataSet objects: {list(self._data_sets)}.\n"
         if self.signal_scaler != 1:
-            text += f"  The signal strength is rescaled by {self.signal_scaler}\n"
+            text += f"  The signal strength is rescaled by {self.signal_scaler}.\n"
         text += f"  Considered signal decays: {self.decay_names}.\n"
         return text

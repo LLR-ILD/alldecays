@@ -11,6 +11,16 @@ class DataSetError(Exception):
 class DataSet:
     """This class defines the input protocol for the fitting step.
 
+    Example:
+        >>> import alldecays
+        >>> decay_names = ["X→AA", "X→BB", "X→CC"]
+        >>> pol_dir = "/path/to/polarized/files/directory")
+        >>> ds = alldecays.DataSet(decay_names, polarization=(-0.8, 0.3))
+        >>> ds.add_channel("channel1", pol_dir)
+
+    This assumes files `eLpL.csv`, `eLpR.csv`, `eRpL.csv`, `eRpR.csv`
+    in `pol_dir` with at least the `decay_names` rows.
+
     As a design choice, channels are added by the path to their data file.
     This emphasizes that `_DataChannel`s are only meant to be used internally.
     You should be careful when modifying `_DataChannel` objects directly.
@@ -138,6 +148,6 @@ class DataSet:
             pol_str = f"with polarization (e-, e+)=({int(100*self.polarization[0])}%, {int(100*self.polarization[1])}%)."
         text += f"  Luminosity: {self.luminosity_ifb} ifb {pol_str}\n"
         if self.signal_scaler != 1:
-            text += f"  The signal strength is rescaled by {self.signal_scaler}\n"
+            text += f"  The signal strength is rescaled by {self.signal_scaler}.\n"
         text += f"  Considered signal decays: {self.decay_names}.\n"
         return text
