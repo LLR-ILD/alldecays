@@ -1,6 +1,7 @@
 import numpy as np
 from pathlib import Path
 
+from .abstract_data_set import AbstractDataSet
 from .data_channel import _DataChannel
 
 
@@ -8,7 +9,7 @@ class DataSetError(Exception):
     pass
 
 
-class DataSet:
+class DataSet(AbstractDataSet):
     """This class defines the input protocol for the fitting step.
 
     Example:
@@ -43,11 +44,14 @@ class DataSet:
         self._polarization = polarization
         self._data_brs = self._set_brs(data_brs)
         if fit_start_brs is None:
-            self.fit_start_brs = np.array(self._data_brs)
+            self._fit_start_brs = np.array(self._data_brs)
         else:
-            self.fit_start_brs = self._set_brs(fit_start_brs)
+            self._fit_start_brs = self._set_brs(fit_start_brs)
         self._luminosity_ifb = luminosity_ifb
         self._signal_scaler = signal_scaler
+
+    def get_channels(self):
+        return self._channels
 
     @property
     def decay_names(self):
@@ -88,6 +92,14 @@ class DataSet:
         for dc in self._channels.values():
             dc.data_brs = new_brs
         self._data_brs = new_brs
+
+    @property
+    def fit_start_brs(self):
+        return self._fit_start_brs
+
+    @fit_start_brs.setter
+    def fit_start_brs(self, new_brs):
+        self._fit_start_brs = new_brs
 
     @property
     def luminosity_ifb(self):

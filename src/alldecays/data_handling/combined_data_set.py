@@ -1,9 +1,10 @@
 import numpy as np
 
+from .abstract_data_set import AbstractDataSet
 from .data_set import DataSetError
 
 
-class CombinedDataSet:
+class CombinedDataSet(AbstractDataSet):
     """Convenience wrapper around multiple `DataSet` objects.
 
     Example:
@@ -43,12 +44,15 @@ class CombinedDataSet:
     def _channels(self):
         channels = {}
         for prefix in self._data_sets:
-            for name, channel in self._data_sets[prefix]._channels.items():
+            for name, channel in self._data_sets[prefix].get_channels().items():
                 n = f"{prefix}:{name}"
                 if n in channels:
                     raise DataSetError(f"Multiple channels with same name: {n}.")
                 channels[n] = channel
         return channels
+
+    def get_channels(self):
+        return self._channels
 
     @property
     def decay_names(self):
@@ -108,7 +112,7 @@ class CombinedDataSet:
             self._data_sets[prefix] = ds
 
     def __repr__(self):
-        n_channels = len(self._channels)
+        n_channels = len(self.get_channels())
         n_data_sets = len(self._data_sets)
         text = f"{self.__class__.__name__} with {n_channels} channels.\n"
         text += f"  {n_data_sets} DataSet objects: {list(self._data_sets)}.\n"
