@@ -2,6 +2,7 @@ from pathlib import Path
 import pytest
 
 import alldecays
+from alldecays.fitting.plugins import available_fit_modes, get_fit_mode
 
 
 def get_data_set():
@@ -12,7 +13,6 @@ def get_data_set():
 
 
 def test_fit_mode_validity():
-    from alldecays.fitting.plugins import available_fit_modes, get_fit_mode
     from alldecays.fitting.plugins.abstract_fit_plugin import AbstractFitPlugin
 
     for name, FitModeClass1 in available_fit_modes.items():
@@ -22,3 +22,16 @@ def test_fit_mode_validity():
     assert FitModeClass1 == get_fit_mode(FitModeClass1)
     with pytest.raises(NotImplementedError):
         get_fit_mode("Non-existing name")
+
+
+def test_limit_setting():
+    data_set = get_data_set()
+    for fit_mode_name in available_fit_modes:
+        f = alldecays.Fit(data_set, fit_mode=fit_mode_name, has_limits=True)
+        assert f.fit_mode.has_limits is True
+    f.fit_mode.has_limits = False
+    assert f.fit_mode.has_limits is False
+    f = alldecays.Fit(data_set, fit_mode=fit_mode_name, has_limits=False)
+    assert f.fit_mode.has_limits is False
+    f.fit_mode.has_limits = True
+    assert f.fit_mode.has_limits is True

@@ -50,6 +50,10 @@ class GaussianLeastSquares(AbstractFitPlugin):
         return np.array(values)
 
     @property
+    def _default_limits(self):
+        return [(0, 1)] * len(self.Minuit.limits)
+
+    @property
     def brs(self):
         brs_plus_bkg = np.array(self.Minuit.values)
         _brs = brs_plus_bkg[:-1]

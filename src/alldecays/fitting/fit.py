@@ -31,7 +31,15 @@ class Fit:
         fit_start_brs: If not specified, defaults to `data_brs`.
     """
 
-    def __init__(self, data_set, fit_mode=default_fit_mode, do_run_fit=True):
+    def __init__(
+        self,
+        data_set,
+        fit_mode=default_fit_mode,
+        use_expected_counts=True,
+        rng=None,
+        has_limits=False,
+        do_run_fit=True,
+    ):
         if not isinstance(data_set, AbstractDataSet):
             raise FitException(
                 "The provided data set does not follow the required protocol.\n"
@@ -40,7 +48,7 @@ class Fit:
             )
         self._data_set = data_set
         FitModeClass = get_fit_mode(fit_mode)
-        self.fit_mode = FitModeClass(data_set)
+        self.fit_mode = FitModeClass(data_set, use_expected_counts, rng, has_limits)
         if do_run_fit:
             self.Minuit.migrad(ncall=10_000)
 
