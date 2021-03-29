@@ -36,6 +36,8 @@ class CombinedDataSet(AbstractDataSet):
 
     def _validate_data_set(self, ds):
         assert self._decay_names == ds._decay_names
+        # Note: You get an AssertionError when you initiate the CombinedDataSet
+        # with the default values, but try to add a DataSet with non-default values.
         assert (self._data_brs == ds._data_brs).all()
         assert (self.fit_start_brs == ds.fit_start_brs).all()
         assert self.signal_scaler == ds.signal_scaler

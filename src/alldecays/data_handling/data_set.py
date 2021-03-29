@@ -10,12 +10,12 @@ class DataSetError(Exception):
 
 
 class DataSet(AbstractDataSet):
-    """This class defines the input protocol for the fitting step.
+    """Defines the input protocol for the fitting step.
 
     Example:
         >>> import alldecays
         >>> decay_names = ["X→AA", "X→BB", "X→CC"]
-        >>> pol_dir = "/path/to/polarized/files/directory")
+        >>> pol_dir = "/path/to/polarized/files/directory"
         >>> ds = alldecays.DataSet(decay_names, polarization=(-0.8, 0.3))
         >>> ds.add_channel("channel1", pol_dir)
 

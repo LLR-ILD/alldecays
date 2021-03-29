@@ -125,3 +125,10 @@ def test_data_set_combined():
 
     channel = combined._channels["ds1:my_channel"]
     go_through_setters(combined, channel, is_combination=True)
+
+
+def test_data_set_subclassing():
+    from alldecays.data_handling.abstract_data_set import AbstractDataSet
+
+    assert isinstance(alldecays.DataSet(decay_names), AbstractDataSet)
+    assert isinstance(alldecays.CombinedDataSet(decay_names), AbstractDataSet)
