@@ -12,10 +12,12 @@ Further information:
 """
 
 from .data_handling import CombinedDataSet, DataSet
+from .fitting import Fit
 from .version import __version__
 
 __all__ = [
     "CombinedDataSet",
     "DataSet",
+    "Fit",
     "__version__",
 ]
