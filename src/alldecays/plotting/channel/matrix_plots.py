@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from ..util import basic_kwargs_check, get_experiment_tag
+from ..util import basic_kwargs_check, get_expected_matrix, get_experiment_tag
 
 
 def _my_format(val):
@@ -88,12 +88,9 @@ def expected_counts_matrix(channel, ax=None, **kwargs):
     basic_kwargs_check(**kwargs)
     if ax is None:
         fig, ax = plt.subplots(figsize=(8, 10))
-    n_signal = channel.luminosity_ifb * channel.signal_cs_default
-    n_signal *= channel.signal_scaler
-    brs = n_signal * channel.data_brs
-    bkg = channel.luminosity_ifb * channel.bkg_cs_default
-    process_scaler = np.concatenate([brs, bkg])
-    expected_matrix = channel.mc_matrix * process_scaler
+
+    expected_matrix = get_expected_matrix(channel)
+    n_signal = expected_matrix[channel.decay_names].sum().sum()
 
     if "no_bkg" in kwargs and kwargs["no_bkg"] is True:
         expected_matrix = expected_matrix[channel.decay_names]

@@ -1,6 +1,8 @@
 plotting_keywords = {
     "combine_bkg",
+    "combine_boxes",
     "experiment_tag",
+    "is_normalized",
     "no_bkg",
 }
 
