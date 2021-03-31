@@ -16,3 +16,10 @@ def all_channel_plots(channel, plot_folder=None, **kwargs):
     if plot_folder is not None:
         fig.tight_layout()
         fig.savefig(Path(plot_folder) / "probability_matrix.png")
+
+
+__all__ = [
+    "all_channel_plots",
+    "expected_counts_matrix",
+    "probability_matrix",
+]

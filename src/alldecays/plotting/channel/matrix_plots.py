@@ -28,9 +28,7 @@ def _my_format(val):
         return f"{v_new:.0f}{suffix}"
 
 
-def _plot_matrix(channel, ax, matrix=None, **kwargs):
-    if matrix is None:
-        matrix = channel.mc_matrix
+def _plot_matrix(matrix, ax, **kwargs):
     if "experiment_tag" in kwargs:
         get_experiment_tag(kwargs["experiment_tag"])(ax)
     omit_zero = "omit_zero" in kwargs and kwargs["omit_zero"] is True
@@ -77,6 +75,15 @@ def _plot_matrix(channel, ax, matrix=None, **kwargs):
 
 
 def expected_counts_matrix(channel, ax=None, **kwargs):
+    """A 2D matrix showing the expected counts per process and box.
+
+    Args:
+        channel: an alldecays.DataChannel
+        ax: matplotlib axis that the plot is drawn onto.
+            By default, create a new axis object.
+        no_bkg: If True, exclude the background processes from the plot.
+        combine_bkg: If True, combine all background processes into one.
+    """
     if ax is None:
         fig, ax = plt.subplots(figsize=(8, 10))
     n_signal = channel.luminosity_ifb * channel.signal_cs_default
@@ -92,7 +99,7 @@ def expected_counts_matrix(channel, ax=None, **kwargs):
         expected_matrix["bkg"] = expected_matrix[channel.bkg_names].sum(axis=1)
         expected_matrix = expected_matrix[channel.decay_names + ["bkg"]]
 
-    _plot_matrix(channel, ax, matrix=expected_matrix)
+    _plot_matrix(expected_matrix, ax)
     ax.set_title(
         (
             f"Distribution of the {n_signal:_.0f} signal events\n"
@@ -104,6 +111,19 @@ def expected_counts_matrix(channel, ax=None, **kwargs):
 
 
 def probability_matrix(channel, ax=None, **kwargs):
+    """A 2D matrix showing the box probabilities per process.
+
+    Column entries do not necessarily add up to 100%.
+    The missing probability accounts for
+    the selection efficiency of the data channel.
+
+    Args:
+        channel: an alldecays.DataChannel
+        ax: matplotlib axis that the plot is drawn onto.
+            By default, create a new axis object.
+        no_bkg: If True, exclude the background processes from the plot.
+        combine_bkg: If True, combine all background processes into one.
+    """
     if ax is None:
         fig, ax = plt.subplots(figsize=(8, 10))
     percent_matrix = 100 * channel.mc_matrix
@@ -115,6 +135,6 @@ def probability_matrix(channel, ax=None, **kwargs):
         percent_matrix["bkg"] = percent_matrix[channel.bkg_names].dot(weight)
         percent_matrix = percent_matrix[channel.decay_names + ["bkg"]]
 
-    _plot_matrix(channel, ax, matrix=percent_matrix)
+    _plot_matrix(percent_matrix, ax)
     ax.set_title("Matrix entries P(Class|BR) [%]", fontsize=14)
     return ax
