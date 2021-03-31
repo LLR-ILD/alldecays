@@ -10,6 +10,6 @@ __pycache__
 .pytest_cache
 htmlcov
 .benchmarks
-tests/test_plots
+tests/tmp
 
 example

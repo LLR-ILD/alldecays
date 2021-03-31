@@ -13,9 +13,11 @@ Further information:
 
 from .data_handling import CombinedDataSet, DataSet
 from .fitting import Fit
+from .plotting import all_plots
 from .version import __version__
 
 __all__ = [
+    "all_plots",
     "CombinedDataSet",
     "DataSet",
     "Fit",
