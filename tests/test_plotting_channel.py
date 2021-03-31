@@ -31,4 +31,6 @@ def test_matrix_plots(matrix_plot_function, channel1):
 
 
 def test_all_channel_plots(test_plot_dir, channel1):
-    all_channel_plots(channel1, test_plot_dir)
+    folder = test_plot_dir / "test_all_channel_plots"
+    folder.mkdir()
+    all_channel_plots(channel1, folder)

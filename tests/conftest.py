@@ -10,11 +10,11 @@ channel1_path = Path(__file__).parent / "data/unpolarized/channel1.csv"
 channel2_path = Path(__file__).parent / "data/unpolarized/channel2.csv"
 channel_polarized_path = Path(__file__).parent / "data/polarized/channel1"
 decay_names = [f"dec{i}" for i in "ABC"]
+timestamp = dt.datetime.now().strftime("%Y-%m-%d-%H%M%S")
 
 
 @pytest.fixture(scope="module")
 def test_plot_dir():
-    timestamp = dt.datetime.now().strftime("%Y-%m-%d-%H%M%S")
     _test_plot_dir = Path(__file__).parent / "tmp" / timestamp
     _test_plot_dir.mkdir(exist_ok=True, parents=True)
     return _test_plot_dir
@@ -41,3 +41,9 @@ def data_set1(channel1):
     data_set = alldecays.DataSet(decay_names=decay_names)
     data_set.add_channel("no_pol", channel1_path)
     return data_set
+
+
+@pytest.fixture(scope="module")
+def fit1(data_set1):
+    fit = alldecays.Fit(data_set1)
+    return fit
