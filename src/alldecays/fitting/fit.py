@@ -14,6 +14,10 @@ default_fit_mode = "GaussianLeastSquares"
 get_fit_mode(default_fit_mode)  # To make sure that this is a valid choice.
 
 
+def default_fit_step(minuit_object):
+    minuit_object.migrad(ncall=10_000)
+
+
 class Fit:
     """Wrapper around a Minuit fitting procedure on a DataSet.
 
@@ -30,16 +34,25 @@ class Fit:
     of the internal parameters (for checks)
     and of the physics parameters (for the numbers that are of actual interest)
     in downstream code (e.g. plots): `m = fit.Minuit` or `m = fit.fit_mode`.
+
+    Args:
+        fit_step: Provide a custom fit procedure.
+            See `default_fit_step` for the required layout.
+            The corresponding `self._fit_step` is propagated to the Fit
+            objects that are created for toy fits.
+
+            To run no fit during the Fit object creation:
+            >>> fit = Fit(data_set, fit_step=lambda x: None)
     """
 
     def __init__(
         self,
         data_set,
-        fit_mode=default_fit_mode,
+        fit_mode=None,
+        fit_step=None,
         use_expected_counts=True,
         rng=None,
         has_limits=False,
-        do_run_fit=True,
     ):
         if not isinstance(data_set, AbstractDataSet):
             raise FitException(
@@ -48,10 +61,14 @@ class Fit:
                 f"    {data_set = }"
             )
         self._data_set = data_set
+        if fit_mode is None:
+            fit_mode = default_fit_mode
         FitModeClass = get_fit_mode(fit_mode)
         self.fit_mode = FitModeClass(data_set, use_expected_counts, rng, has_limits)
-        if do_run_fit:
-            self._standard_fitting_step()
+        if fit_step is None:
+            fit_step = default_fit_step
+        self._fit_step = fit_step
+        self._fit_step(self.Minuit)
 
     def __repr__(self):
         return (
@@ -59,9 +76,6 @@ class Fit:
             f" - Fit mode: {self.fit_mode}\n"
             f" - Data set: {self._data_set}\n"
         )
-
-    def _standard_fitting_step(self):
-        self.Minuit.migrad(ncall=10_000)
 
     @property
     def Minuit(self):
@@ -78,15 +92,16 @@ class Fit:
         nfcn = np.zeros(n_toys, dtype=int)
 
         for i in tqdm.trange(n_toys, total=n_toys, unit=" toy minimizations"):
-            # Set `do_run_fit=False` to check that most of the time is indeed
+            # Set `self._fit_step=lambda x: None` before calling `fill_toys`
+            # to check that most of the time is indeed
             # spent in the fitting step, and not in setup of the Data objects.
             toy_fit = Fit(
                 data_set=self._data_set,
                 fit_mode=type(self.fit_mode),
+                fit_step=self._fit_step,
                 use_expected_counts=False,
                 rng=rng,
                 has_limits=self.fit_mode.has_limits,
-                do_run_fit=True,
             )
             internal[i] = toy_fit.Minuit.values
             physics[i] = toy_fit.fit_mode.values

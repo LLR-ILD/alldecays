@@ -34,7 +34,19 @@ def test_fit_mode_physics_parameter_consistency(fit_mode_name, data_set1):
     n_physics_params = len(m.parameters)
     assert m.values.shape == (n_physics_params,)
     fit_performed_yet = m.covariance.shape != tuple()
-    assert fit_performed_yet  # Raised if `do_run_fit=False`.
+    assert fit_performed_yet  # Raised e.g. if `fit_step=lambda x: None`.
     if fit_performed_yet:
         assert m.covariance.shape == (n_physics_params, n_physics_params)
         assert m.errors ** 2 == pytest.approx(m.covariance.diagonal())
+
+
+@pytest.mark.parametrize(
+    "fit_step",
+    [
+        lambda x: None,  # No fitting.
+        None,  # Default value.
+        lambda x: x.migrad(2),  # Fit step probably too short for convergence.
+    ],
+)
+def test_fit_step_valid(fit_step, data_set1):
+    alldecays.Fit(data_set1, fit_step=fit_step)
