@@ -55,15 +55,12 @@ class GaussianLeastSquares(AbstractFitPlugin):
 
     @property
     def values(self):
-        brs_plus_bkg = np.array(self.Minuit.values)
-        _brs = brs_plus_bkg[:-1]
-        _brs = _brs / _brs.sum()
-        return _brs
+        return np.array(self.Minuit.values)
 
     @property
     def parameters(self):
-        return tuple(self.decay_names)
+        return tuple(self._data_set.decay_names)
 
     @property
     def covariance(self):
-        return np.array(self.Minuit.covariance)[:-1, :-1]
+        return np.array(self.Minuit.covariance)

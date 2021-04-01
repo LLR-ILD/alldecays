@@ -5,7 +5,7 @@ from alldecays.fitting.plugins import available_fit_modes, get_fit_mode
 from alldecays.fitting.plugins.abstract_fit_plugin import AbstractFitPlugin
 
 
-def test_fit_mode_validity(data_set1):
+def test_fit_mode_choice(data_set1):
     for name, FitModeClass1 in available_fit_modes.items():
         FitModeClass2 = get_fit_mode(name)
         assert FitModeClass1 == FitModeClass2
@@ -25,3 +25,16 @@ def test_limit_setting(data_set1):
     assert f.fit_mode.has_limits is False
     f.fit_mode.has_limits = True
     assert f.fit_mode.has_limits is True
+
+
+@pytest.mark.parametrize("fit_mode_name", available_fit_modes.keys())
+def test_fit_mode_physics_parameter_consistency(fit_mode_name, data_set1):
+    fit = alldecays.Fit(data_set1, fit_mode=fit_mode_name)
+    m = fit.fit_mode
+    n_physics_params = len(m.parameters)
+    assert m.values.shape == (n_physics_params,)
+    fit_performed_yet = m.covariance.shape != tuple()
+    assert fit_performed_yet  # Raised if `do_run_fit=False`.
+    if fit_performed_yet:
+        assert m.covariance.shape == (n_physics_params, n_physics_params)
+        assert m.errors ** 2 == pytest.approx(m.covariance.diagonal())
