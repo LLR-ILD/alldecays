@@ -1,6 +1,7 @@
 import pytest
 
 import alldecays
+from alldecays.fitting import InvalidFitException
 from alldecays.fitting.plugins import available_fit_modes, get_fit_mode
 from alldecays.fitting.plugins.abstract_fit_plugin import AbstractFitPlugin
 
@@ -42,11 +43,17 @@ def test_fit_mode_physics_parameter_consistency(fit_mode_name, data_set1):
 
 @pytest.mark.parametrize(
     "fit_step",
-    [
-        lambda x: None,  # No fitting.
-        None,  # Default value.
-        lambda x: x.migrad(2),  # Fit step probably too short for convergence.
-    ],
+    [lambda x: None, None],
+    ids=["no fitting", "default value"],
 )
 def test_fit_step_valid(fit_step, data_set1):
     alldecays.Fit(data_set1, fit_step=fit_step)
+
+
+def test_fit_step_invalid(data_set1):
+    def fit_step(x):
+        x.migrad(2)
+
+    with pytest.raises(InvalidFitException):
+        alldecays.Fit(data_set1, fit_step=fit_step)
+    alldecays.Fit(data_set1, fit_step=fit_step, raise_invalid_fit_exception=False)

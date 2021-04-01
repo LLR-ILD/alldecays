@@ -10,6 +10,10 @@ class FitException(Exception):
     pass
 
 
+class InvalidFitException(FitException):
+    pass
+
+
 default_fit_mode = "GaussianLeastSquares"
 get_fit_mode(default_fit_mode)  # To make sure that this is a valid choice.
 
@@ -53,6 +57,7 @@ class Fit:
         use_expected_counts=True,
         rng=None,
         has_limits=False,
+        raise_invalid_fit_exception=True,
     ):
         if not isinstance(data_set, AbstractDataSet):
             raise FitException(
@@ -68,7 +73,8 @@ class Fit:
         if fit_step is None:
             fit_step = default_fit_step
         self._fit_step = fit_step
-        self._fit_step(self.Minuit)
+        self._raise_invalid_fit_exception = raise_invalid_fit_exception
+        self.run_fit()
 
     def __repr__(self):
         return (
@@ -80,6 +86,19 @@ class Fit:
     @property
     def Minuit(self):
         return self.fit_mode.Minuit
+
+    def run_fit(self):
+        self._fit_step(self.Minuit)
+        if (
+            not self.Minuit.valid
+            and self.Minuit.nfcn != 0
+            and self._raise_invalid_fit_exception
+        ):
+            raise InvalidFitException(
+                "If the reason for the invalid status is understood,\n"
+                "silence this with `raise_invalid_fit_exception=False`.\n"
+                f"{self.Minuit}"
+            )
 
     def fill_toys(self, n_toys=100, rng=None):
         """TODO: Multiprocessing"""
@@ -102,6 +121,7 @@ class Fit:
                 use_expected_counts=False,
                 rng=rng,
                 has_limits=self.fit_mode.has_limits,
+                raise_invalid_fit_exception=self._raise_invalid_fit_exception,
             )
             internal[i] = toy_fit.Minuit.values
             physics[i] = toy_fit.fit_mode.values
