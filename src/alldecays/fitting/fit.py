@@ -100,10 +100,17 @@ class Fit:
                 f"{self.Minuit}"
             )
 
-    def fill_toys(self, n_toys=100, rng=None):
+    def fill_toys(self, n_toys=100, rng=None, store_channel_counts=False):
         """TODO: Multiprocessing"""
         if rng is None:
             rng = self.fit_mode.rng
+        if store_channel_counts and n_toys >= 100:
+            print(
+                "Storing channel counts is meant for debugging/diagnostics.\n"
+                f"{n_toys=} seems like a high number for such a run."
+            )
+        if store_channel_counts:
+            channel_counts = [[]] * n_toys
         internal = np.zeros((n_toys, len(self.Minuit.parameters)))
         physics = np.zeros((n_toys, len(self.fit_mode.parameters)))
         valid = np.zeros(n_toys, dtype=bool)
@@ -131,6 +138,8 @@ class Fit:
             valid[i] = toy_fit.Minuit.valid
             accurate[i] = toy_fit.Minuit.accurate
             nfcn[i] = toy_fit.Minuit.nfcn
+            if store_channel_counts:
+                channel_counts[i] = toy_fit.fit_mode._counts
             if not toy_fit.Minuit.accurate:
                 values = dict()
                 values["inaccurate"] = sum(~accurate[: i + 1])
@@ -143,5 +152,6 @@ class Fit:
             valid,
             accurate,
             nfcn,
+            channel_counts if store_channel_counts else None,
         )
         return self.toys
