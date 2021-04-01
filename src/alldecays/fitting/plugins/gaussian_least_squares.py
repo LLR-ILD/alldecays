@@ -63,4 +63,6 @@ class GaussianLeastSquares(AbstractFitPlugin):
 
     @property
     def covariance(self):
+        if self.Minuit.covariance is None:
+            print("WARNING: Covariance not yet calculated by a Minuit fit.")
         return np.array(self.Minuit.covariance)
