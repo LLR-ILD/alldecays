@@ -110,7 +110,10 @@ class Fit:
         accurate = np.zeros(n_toys, dtype=bool)
         nfcn = np.zeros(n_toys, dtype=int)
 
-        for i in tqdm.trange(n_toys, total=n_toys, unit=" toy minimizations"):
+        toy_range = tqdm.trange(n_toys, total=n_toys, unit=" toy minimizations")
+        pf_template = "{inaccurate} not accurate, {invalid} invalid"
+        toy_range.set_postfix_str(pf_template.format(inaccurate=0, invalid=0))
+        for i in toy_range:
             # Set `self._fit_step=lambda x: None` before calling `fill_toys`
             # to check that most of the time is indeed
             # spent in the fitting step, and not in setup of the Data objects.
@@ -128,6 +131,11 @@ class Fit:
             valid[i] = toy_fit.Minuit.valid
             accurate[i] = toy_fit.Minuit.accurate
             nfcn[i] = toy_fit.Minuit.nfcn
+            if not toy_fit.Minuit.accurate:
+                values = dict()
+                values["inaccurate"] = sum(~accurate[: i + 1])
+                values["invalid"] = sum(~valid[: i + 1])
+                toy_range.set_postfix_str(pf_template.format(**values))
 
         self.toys = ToyValues(
             internal,
