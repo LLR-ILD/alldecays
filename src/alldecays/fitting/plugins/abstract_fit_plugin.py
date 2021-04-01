@@ -38,7 +38,12 @@ class AbstractFitPlugin(ABC):
 
     @property
     @abstractmethod
-    def brs(self):
+    def values(self):
+        pass
+
+    @property
+    @abstractmethod
+    def parameters(self):
         pass
 
     @property

@@ -11,24 +11,21 @@ get_fit_mode(default_fit_mode)  # To make sure that this is a valid choice.
 
 
 class Fit:
-    """This class defines the input protocol for the fitting step.
+    """Wrapper around a Minuit fitting procedure on a DataSet.
 
     Example:
         >>> import alldecays
-        >>> decay_names = ["X→AA", "X→BB", "X→CC"]
-        >>> pol_dir = "/path/to/polarized/files/directory")
-        >>> ds = alldecays.DataSet(decay_names, polarization=(-0.8, 0.3))
-        >>> ds.add_channel("channel1", pol_dir)
+        >>> assert isinstance(data_set, alldecays.DataSet)
+        >>> fit = Fit(data_set)
+        >>> fit_internal = fit.Minuit
+        >>> fit_physics = fit.fit_mode
 
-    This assumes files `eLpL.csv`, `eLpR.csv`, `eRpL.csv`, `eRpR.csv`
-    in `pol_dir` with at least the `decay_names` rows.
-
-    As a design choice, channels are added by the path to their data file.
-    This emphasizes that `_DataChannel`s are only meant to be used internally.
-    You should be careful when modifying `_DataChannel` objects directly.
-    Args:
-        data_brs: default is  flat branching ratio.
-        fit_start_brs: If not specified, defaults to `data_brs`.
+    The most important property names of the iminuit.Minuit class
+    are replicated in fit_mode (in the fitting plugins).
+    Thus it is simple to switch between the usage
+    of the internal parameters (for checks)
+    and of the physics parameters (for the numbers that are of actual interest)
+    in downstream code (e.g. plots): `m = fit.Minuit` or `m = fit.fit_mode`.
     """
 
     def __init__(
