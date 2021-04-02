@@ -4,7 +4,10 @@ from iminuit import Minuit
 from .abstract_fit_plugin import AbstractFitPlugin
 
 
-class GaussianLeastSquares(AbstractFitPlugin):
+class LeastSquares(AbstractFitPlugin):
+    def variance_maker(self, y_dict):
+        raise NotImplementedError
+
     def _create_likelihood(self):
         sig_weight, bkg_weight = {}, {}
         for name, channel in self._data_set.get_channels().items():
@@ -24,7 +27,7 @@ class GaussianLeastSquares(AbstractFitPlugin):
 
         M = self._matrix
         y = self._counts
-        y_variance = {k: v for k, v in y.items()}  # Could be changed?
+        y_variance = self.variance_maker(y)
 
         def fcn(x):
             return 2 * sum(
@@ -66,3 +69,22 @@ class GaussianLeastSquares(AbstractFitPlugin):
         if self.Minuit.covariance is None:
             print("WARNING: Covariance not yet calculated by a Minuit fit.")
         return np.array(self.Minuit.covariance)
+
+
+class GaussianLeastSquares(LeastSquares):
+    """The standard chi-square procedure.
+
+    Has problematic behavior when zero counts are observed in a box.
+    Those boxes are then effectively restrict the fit
+    to models that predict exactly 0 counts in the box.
+
+    This should not happen when working with the expected counts,
+    but can easily occur in a toy study fluctuation
+    for small (< 5) expected counts in a box.
+    BinomialLeastSquares is provided to circumvent this issue.
+
+    TODO: Add the references we found for this issue in iminit-BRS repo.
+    """
+
+    def variance_maker(self, y_dict):
+        return {k: v for k, v in y_dict.items()}
