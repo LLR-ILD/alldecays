@@ -18,8 +18,10 @@ def all_plots(fit, plot_folder, **kwargs):
     basic_kwargs_check(**kwargs)
     plot_dir = {}
 
+    channels_folder = Path(plot_folder) / "channels"
+    channels_folder.mkdir(exist_ok=True)
     for channel_name, channel in fit._data_set.get_channels().items():
-        channel_plot_folder = Path(plot_folder) / channel_name
+        channel_plot_folder = channels_folder / channel_name
         channel_plot_folder.mkdir(exist_ok=True)
         cpd = all_channel_plots(channel, channel_plot_folder, **kwargs)
         for key in cpd:
@@ -28,6 +30,8 @@ def all_plots(fit, plot_folder, **kwargs):
     fpd = all_fit_plots(fit, plot_folder, **kwargs)
     plot_dir.update(fpd)
 
-    tpd = all_toy_plots(fit, plot_folder, **kwargs)
+    toys_folder = Path(plot_folder) / "toys"
+    toys_folder.mkdir(exist_ok=True)
+    tpd = all_toy_plots(fit, toys_folder, **kwargs)
     plot_dir.update({f"toys:{k}": v for k, v in tpd.items()})
     return plot_dir
