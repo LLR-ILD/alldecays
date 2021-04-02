@@ -46,4 +46,5 @@ def data_set1(channel1):
 @pytest.fixture(scope="module")
 def fit1(data_set1):
     fit = alldecays.Fit(data_set1)
+    fit.fill_toys(n_toys=10, store_channel_counts=True)
     return fit

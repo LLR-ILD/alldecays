@@ -2,6 +2,7 @@ from pathlib import Path
 
 from .channel import all_channel_plots
 from .fit import all_fit_plots
+from .toys import all_toy_plots
 from .util import basic_kwargs_check
 
 
@@ -26,4 +27,7 @@ def all_plots(fit, plot_folder, **kwargs):
 
     fpd = all_fit_plots(fit, plot_folder, **kwargs)
     plot_dir.update(fpd)
+
+    tpd = all_toy_plots(fit, plot_folder, **kwargs)
+    plot_dir.update({f"toys:{k}": v for k, v in tpd.items()})
     return plot_dir
