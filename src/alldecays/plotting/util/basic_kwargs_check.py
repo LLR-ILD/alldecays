@@ -4,6 +4,7 @@ plotting_keywords = {
     "experiment_tag",
     "is_normalized",
     "no_bkg",
+    "omit_zero",
 }
 
 

@@ -1,7 +1,7 @@
 import pytest
 
 import alldecays
-from alldecays.plotting.toys.diagnostics import get_valid_toy_values
+from alldecays.plotting.toys.toy_util import get_valid_toy_values
 
 
 def test_get_valid_toy_values(data_set1):

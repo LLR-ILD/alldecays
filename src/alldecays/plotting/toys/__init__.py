@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 from ..util import basic_kwargs_check
-from .diagnostics import channel_toy_counts, get_valid_toy_values
+from .diagnostics import channel_toy_counts
+from .toy_util import get_valid_toy_values
 
 
 def diagnostics_plots(fit, plot_folder=None, **kwargs):

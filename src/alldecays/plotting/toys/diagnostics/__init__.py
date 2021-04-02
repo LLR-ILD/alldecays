@@ -1,6 +1,5 @@
-from .channel_toy_counts import channel_toy_counts, get_valid_toy_values
+from .channel_toy_counts import channel_toy_counts
 
 __all__ = [
     "channel_toy_counts",
-    "get_valid_toy_values",
 ]
