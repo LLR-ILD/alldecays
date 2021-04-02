@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 from ..util import basic_kwargs_check
-from .diagnostics import channel_toy_counts
+from .diagnostics import toy_counts_channel
 from .toy_util import get_valid_toy_values
 
 
-def diagnostics_plots(fit, plot_folder=None, **kwargs):
+def toy_diagnostics_plots(fit, plot_folder=None, **kwargs):
     """Run all diagnostics plots on a fit with toy study."""
     kwargs["allow_unused_kwargs"] = True
     figs = {}
@@ -22,7 +22,7 @@ def diagnostics_plots(fit, plot_folder=None, **kwargs):
 
     for channel_name, channel in fit._data_set.get_channels().items():
         fig, ax = plt.subplots()
-        channel_toy_counts(fit, channel_name, ax, **kwargs)
+        toy_counts_channel(fit, channel_name, ax, **kwargs)
         fig.tight_layout()
         fig_name = f"box_counts_{channel_name}"
         if plot_folder is not None:
@@ -51,6 +51,13 @@ def all_toy_plots(fit, plot_folder=None, **kwargs):
         return figs
 
     # Put toy plots here.
-    diagnostics_figs = diagnostics_plots(fit, plot_folder, **kwargs)
+    diagnostics_figs = toy_diagnostics_plots(fit, plot_folder, **kwargs)
     figs.update({f"diagnostics:{k}": v for k, v in diagnostics_figs.items()})
     return figs
+
+
+__all__ = [
+    "all_toy_plots",
+    "toy_counts_channel",
+    "toy_diagnostics_plots",
+]

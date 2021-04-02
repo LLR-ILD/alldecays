@@ -7,7 +7,7 @@ from alldecays.plotting.util import basic_kwargs_check, get_experiment_tag
 from ..toy_util import get_valid_toy_values
 
 
-def channel_toy_counts(
+def toy_counts_channel(
     fit, channel_name, ax=None, experiment_tag=None, allow_unused_kwargs=False, **kwargs
 ):
     """Visualize the channel counts from toy fits.

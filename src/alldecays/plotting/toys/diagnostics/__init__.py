@@ -1,6 +1,6 @@
 """Diagnostics plots that might be useful for fits that are not well behaved."""
-from .channel_toy_counts import channel_toy_counts
+from .toy_counts_channel import toy_counts_channel
 
 __all__ = [
-    "channel_toy_counts",
+    "toy_counts_channel",
 ]
