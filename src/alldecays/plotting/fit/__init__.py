@@ -1,7 +1,7 @@
 from ..util import basic_kwargs_check  # , get_experiment_tag
 
 
-def all_fit_plots(fit, plot_path, **kwargs):
+def all_fit_plots(fit, plot_folder=None, **kwargs):
     """Convenience wrapper around the provided plot options for a Fit.
 
     Can be useful for getting a quick overview,

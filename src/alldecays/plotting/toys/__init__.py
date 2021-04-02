@@ -5,27 +5,29 @@ from ..util import basic_kwargs_check
 from .diagnostics import channel_toy_counts, get_valid_toy_values
 
 
-def diagnostics_plots(fit, plot_folder, **kwargs):
+def diagnostics_plots(fit, plot_folder=None, **kwargs):
     figs = {}
     try:
         get_valid_toy_values(fit, channel_counts_needed=True)
     except AttributeError as ae:
         print(str(ae))
         return figs
-    diagnostics_folder = Path(plot_folder) / "diagnostics"
-    diagnostics_folder.mkdir(exist_ok=True)
+    if plot_folder is not None:
+        diagnostics_folder = Path(plot_folder) / "diagnostics"
+        diagnostics_folder.mkdir(exist_ok=True)
 
     for channel_name, channel in fit._data_set.get_channels().items():
         fig, ax = plt.subplots()
         channel_toy_counts(fit, channel_name, ax, **kwargs)
         fig.tight_layout()
         fig_name = f"box_counts_{channel_name}"
-        fig.savefig(diagnostics_folder / f"{fig_name}.png", dpi=800)
+        if plot_folder is not None:
+            fig.savefig(diagnostics_folder / f"{fig_name}.png", dpi=800)
         figs[fig_name] = fig
     return figs
 
 
-def all_toy_plots(fit, plot_folder, **kwargs):
+def all_toy_plots(fit, plot_folder=None, **kwargs):
     """Convenience wrapper around the provided plot options for the toys of a Fit.
 
     Can be useful for getting a quick overview,

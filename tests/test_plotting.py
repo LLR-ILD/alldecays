@@ -1,4 +1,5 @@
 import matplotlib
+import matplotlib.pyplot as plt
 
 import alldecays
 
@@ -21,3 +22,9 @@ def test_experiment_tag_ILD(fit1, test_plot_dir):
     figures = alldecays.all_plots(fit1, folder, experiment_tag=tag_name)
     for fig_name, fig in figures.items():
         assert any(tag_is_applied_to_ax(ax) for ax in fig.get_axes())
+    plt.close("all")
+
+
+def test_no_saving(fit1):
+    alldecays.all_plots(fit1)
+    plt.close("all")

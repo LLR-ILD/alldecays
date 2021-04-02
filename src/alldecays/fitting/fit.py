@@ -99,6 +99,7 @@ class Fit:
                 "silence this with `raise_invalid_fit_exception=False`.\n"
                 f"{self.Minuit}"
             )
+        return self.Minuit
 
     def fill_toys(self, n_toys=100, rng=None, store_channel_counts=False):
         """TODO: Multiprocessing"""

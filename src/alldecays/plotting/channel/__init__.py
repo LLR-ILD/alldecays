@@ -21,7 +21,8 @@ def all_channel_plots(channel, plot_folder=None, **kwargs):
     def save_wrap(fig, name):
         if plot_folder is not None:
             fig.tight_layout()
-            fig.savefig(Path(plot_folder) / f"{name}.png")
+            if plot_folder is not None:
+                fig.savefig(Path(plot_folder) / f"{name}.png")
         figs[name] = fig
 
     fig, ax = plt.subplots(figsize=(8, 10))
