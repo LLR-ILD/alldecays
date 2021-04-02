@@ -11,5 +11,6 @@ def all_fit_plots(fit, plot_folder=None, **kwargs):
     Returns:
         dict[matplotlib figure.Figure]: Used in the module test suite.
     """
+    kwargs["allow_unused_kwargs"] = True
     basic_kwargs_check(**kwargs)
     return {}

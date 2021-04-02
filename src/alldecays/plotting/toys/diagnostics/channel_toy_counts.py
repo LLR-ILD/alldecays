@@ -7,7 +7,9 @@ from alldecays.plotting.util import basic_kwargs_check, get_experiment_tag
 from ..toy_util import get_valid_toy_values
 
 
-def channel_toy_counts(fit, channel_name, ax=None, **kwargs):
+def channel_toy_counts(
+    fit, channel_name, ax=None, experiment_tag=None, allow_unused_kwargs=False, **kwargs
+):
     """Visualize the channel counts from toy fits.
 
     This might help to find why some fits are not finding the expected minimum.
@@ -18,8 +20,14 @@ def channel_toy_counts(fit, channel_name, ax=None, **kwargs):
         channel_name: One of the names in the fit's _data_set.
         ax: matplotlib axis that the plot is drawn onto.
             By default, create a new axis object.
+        experiment_tag: Add a watermark to the axis.
+        allow_unused_kwargs: This can be nice to have for `all_plots`like calls.
     """
-    basic_kwargs_check(**kwargs)
+    if allow_unused_kwargs:
+        basic_kwargs_check(**kwargs)
+    elif kwargs:
+        raise TypeError(f"{', '.join(kwargs)} is an invalid keyword argument.")
+
     toy_values = get_valid_toy_values(fit, channel_counts_needed=True)
     channel = fit.fit_mode._data_set.get_channels()[channel_name]
     expected_counts = channel.get_expected_counts()
@@ -28,8 +36,8 @@ def channel_toy_counts(fit, channel_name, ax=None, **kwargs):
 
     if ax is None:
         fig, ax = plt.subplots()
-    if "experiment_tag" in kwargs:
-        get_experiment_tag(kwargs["experiment_tag"])(ax)
+    if experiment_tag:
+        get_experiment_tag(experiment_tag)(ax)
 
     def draw_count_ratios(ax):
         for i in range(len(toy_values)):

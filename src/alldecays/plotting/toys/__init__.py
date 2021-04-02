@@ -9,6 +9,7 @@ from .toy_util import get_valid_toy_values
 
 def diagnostics_plots(fit, plot_folder=None, **kwargs):
     """Run all diagnostics plots on a fit with toy study."""
+    kwargs["allow_unused_kwargs"] = True
     figs = {}
     try:
         get_valid_toy_values(fit, channel_counts_needed=True)
@@ -39,6 +40,7 @@ def all_toy_plots(fit, plot_folder=None, **kwargs):
     Returns:
         dict[matplotlib figure.Figure]: Used in the module test suite.
     """
+    kwargs["allow_unused_kwargs"] = True
     basic_kwargs_check(**kwargs)
     figs = {}
 

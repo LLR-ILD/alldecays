@@ -29,12 +29,16 @@ def _my_format(val):
         return f"{v_new:.0f}{suffix}"
 
 
-def _plot_matrix(matrix, ax, **kwargs):
+def _plot_matrix(
+    matrix, ax, experiment_tag=None, omit_zero=True, allow_unused_kwargs=False, **kwargs
+):
     """DataFrame with floats -> 2D heatmap on `ax`."""
-    basic_kwargs_check(**kwargs)
-    if "experiment_tag" in kwargs:
-        get_experiment_tag(kwargs["experiment_tag"])(ax)
-    omit_zero = "omit_zero" in kwargs and kwargs["omit_zero"] is True
+    if allow_unused_kwargs:
+        basic_kwargs_check(**kwargs)
+    elif kwargs:
+        raise TypeError(f"{', '.join(kwargs)} is an invalid keyword argument.")
+    if experiment_tag:
+        get_experiment_tag(experiment_tag)(ax)
 
     def set_labels(ax):
         ax.set_yticks(np.arange(matrix.shape[0]))
@@ -77,7 +81,15 @@ def _plot_matrix(matrix, ax, **kwargs):
     return ax
 
 
-def expected_counts_matrix(channel, ax=None, **kwargs):
+def expected_counts_matrix(
+    channel,
+    ax=None,
+    no_bkg=False,
+    combine_bkg=False,
+    experiment_tag=None,
+    allow_unused_kwargs=False,
+    **kwargs,
+):
     """A 2D matrix showing the expected counts per process and box.
 
     Args:
@@ -86,21 +98,26 @@ def expected_counts_matrix(channel, ax=None, **kwargs):
             By default, create a new axis object.
         no_bkg: If True, exclude the background processes from the plot.
         combine_bkg: If True, combine all background processes into one.
+        experiment_tag: Add a watermark to the axis.
+        allow_unused_kwargs: This can be nice to have for `all_plots`like calls.
     """
-    basic_kwargs_check(**kwargs)
+    if allow_unused_kwargs:
+        basic_kwargs_check(**kwargs)
+    elif kwargs:
+        raise TypeError(f"{', '.join(kwargs)} is an invalid keyword argument.")
     if ax is None:
         fig, ax = plt.subplots(figsize=(8, 10))
 
     expected_matrix = get_expected_matrix(channel)
     n_signal = expected_matrix[channel.decay_names].sum().sum()
 
-    if "no_bkg" in kwargs and kwargs["no_bkg"] is True:
+    if no_bkg:
         expected_matrix = expected_matrix[channel.decay_names]
-    elif "combine_bkg" in kwargs and kwargs["combine_bkg"] is True:
+    elif combine_bkg:
         expected_matrix["bkg"] = expected_matrix[channel.bkg_names].sum(axis=1)
         expected_matrix = expected_matrix[channel.decay_names + ["bkg"]]
 
-    _plot_matrix(expected_matrix, ax, **kwargs)
+    _plot_matrix(expected_matrix, ax, experiment_tag, **kwargs)
     ax.set_title(
         (
             f"Distribution of the {n_signal:_.0f} signal events\n"
@@ -111,7 +128,15 @@ def expected_counts_matrix(channel, ax=None, **kwargs):
     return ax
 
 
-def probability_matrix(channel, ax=None, **kwargs):
+def probability_matrix(
+    channel,
+    ax=None,
+    no_bkg=False,
+    combine_bkg=False,
+    experiment_tag=None,
+    allow_unused_kwargs=False,
+    **kwargs,
+):
     """A 2D matrix showing the box probabilities per process.
 
     Column entries do not necessarily add up to 100%.
@@ -124,19 +149,24 @@ def probability_matrix(channel, ax=None, **kwargs):
             By default, create a new axis object.
         no_bkg: If True, exclude the background processes from the plot.
         combine_bkg: If True, combine all background processes into one.
+        experiment_tag: Add a watermark to the axis.
+        allow_unused_kwargs: This can be nice to have for `all_plots`like calls.
     """
-    basic_kwargs_check(**kwargs)
+    if allow_unused_kwargs:
+        basic_kwargs_check(**kwargs)
+    elif kwargs:
+        raise TypeError(f"{', '.join(kwargs)} is an invalid keyword argument.")
     if ax is None:
         fig, ax = plt.subplots(figsize=(8, 10))
     percent_matrix = 100 * channel.mc_matrix
 
-    if "no_bkg" in kwargs and kwargs["no_bkg"] is True:
+    if no_bkg:
         percent_matrix = percent_matrix[channel.decay_names]
-    elif "combine_bkg" in kwargs and kwargs["combine_bkg"] is True:
+    elif combine_bkg:
         weight = channel.bkg_cs_default / channel.bkg_cs_default.sum()
         percent_matrix["bkg"] = percent_matrix[channel.bkg_names].dot(weight)
         percent_matrix = percent_matrix[channel.decay_names + ["bkg"]]
 
-    _plot_matrix(percent_matrix, ax, **kwargs)
+    _plot_matrix(percent_matrix, ax, experiment_tag, **kwargs)
     ax.set_title("Matrix entries P(Class|BR) [%]", fontsize=14)
     return ax

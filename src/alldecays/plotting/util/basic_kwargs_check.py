@@ -1,5 +1,6 @@
 """Keyword argument check."""
 plotting_keywords = {
+    "allow_unused_kwargs",
     "combine_bkg",
     "combine_boxes",
     "experiment_tag",
@@ -25,7 +26,7 @@ def basic_kwargs_check(**kwargs):
     n_invalid_kwargs = len(invalid_kwargs)
     if n_invalid_kwargs != 0:
         str_inv = "" if n_invalid_kwargs == 1 else f"s({n_invalid_kwargs})"
-        print(
+        raise TypeError(
             f"Invalid keyword argument{str_inv}: {', '.join(invalid_kwargs)}. "
             "Maybe a misspelling."
         )

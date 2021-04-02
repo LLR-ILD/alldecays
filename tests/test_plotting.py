@@ -21,7 +21,8 @@ def test_experiment_tag_ILD(fit1, test_plot_dir):
     folder.mkdir()
     figures = alldecays.all_plots(fit1, folder, experiment_tag=tag_name)
     for fig_name, fig in figures.items():
-        assert any(tag_is_applied_to_ax(ax) for ax in fig.get_axes())
+        # fig_name to know which plot had the problem.
+        assert fig_name and any(tag_is_applied_to_ax(ax) for ax in fig.get_axes())
     plt.close("all")
 
 

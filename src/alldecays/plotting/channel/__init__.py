@@ -16,6 +16,7 @@ def all_channel_plots(channel, plot_folder=None, **kwargs):
     Returns:
         dict[matplotlib figure.Figure]: Used in the module test suite.
     """
+    kwargs["allow_unused_kwargs"] = True
     basic_kwargs_check(**kwargs)
     figs = {}
 
