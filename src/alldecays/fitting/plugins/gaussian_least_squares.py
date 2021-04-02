@@ -1,3 +1,4 @@
+"""GaussianLeastSquares fit mode class."""
 import numpy as np
 from iminuit import Minuit
 
@@ -5,7 +6,13 @@ from .abstract_fit_plugin import AbstractFitPlugin
 
 
 class LeastSquares(AbstractFitPlugin):
+    """A least square fitting procedure.
+
+    `variance_maker(self, y_dict)` has to be overwritten by an inheriting class.
+    """
+
     def variance_maker(self, y_dict):
+        """Should be overwritten by inheriting classes."""
         raise NotImplementedError
 
     def _create_likelihood(self):
@@ -50,6 +57,9 @@ class LeastSquares(AbstractFitPlugin):
         return fcn
 
     def transform_to_internal(self, values):
+        """Given the parameters in the physics space,
+        return their internal representation for Minuit.
+        """
         return np.array(values)
 
     @property
@@ -87,4 +97,5 @@ class GaussianLeastSquares(LeastSquares):
     """
 
     def variance_maker(self, y_dict):
+        """Get the variance given the observed counts per box."""
         return {k: v for k, v in y_dict.items()}

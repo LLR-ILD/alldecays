@@ -1,7 +1,6 @@
 import pytest
 
 import alldecays
-from alldecays.fitting import InvalidFitException
 from alldecays.fitting.plugins import available_fit_modes, get_fit_mode
 from alldecays.fitting.plugins.abstract_fit_plugin import AbstractFitPlugin
 
@@ -54,6 +53,6 @@ def test_fit_step_invalid(data_set1):
     def fit_step(x):
         x.migrad(2)
 
-    with pytest.raises(InvalidFitException):
+    with pytest.raises(alldecays.exceptions.InvalidFitException):
         alldecays.Fit(data_set1, fit_step=fit_step)
     alldecays.Fit(data_set1, fit_step=fit_step, raise_invalid_fit_exception=False)

@@ -1,3 +1,4 @@
+"""Common/required functionality for DataSet-like classes."""
 from abc import ABC, abstractmethod
 
 

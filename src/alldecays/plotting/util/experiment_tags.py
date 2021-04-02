@@ -1,4 +1,8 @@
+"""Provide some tag/watermarking choices for plots."""
+
+
 def ild_preliminary(ax):
+    """ILD preliminary watermark."""
     ax.text(
         0.99,
         0.99,
@@ -19,6 +23,7 @@ provided_experiment_tags = {
 
 
 def do_nothing(ax):
+    """Do not add any watermark."""
     return ax
 
 

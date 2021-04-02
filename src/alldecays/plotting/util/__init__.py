@@ -1,3 +1,4 @@
+"""Plotting utility code."""
 import numpy as np
 
 from .basic_kwargs_check import basic_kwargs_check
@@ -5,6 +6,7 @@ from .experiment_tags import get_experiment_tag
 
 
 def get_expected_matrix(channel):
+    """Multiply the channel's `mc_matrix` with the necessary channel information."""
     n_signal = channel.luminosity_ifb * channel.signal_cs_default
     n_signal *= channel.signal_scaler
     brs = n_signal * channel.data_brs

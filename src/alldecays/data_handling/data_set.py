@@ -1,12 +1,13 @@
+"""Data set class.
+
+These objects are used throughout the module to interact with the physics data.
+"""
 import numpy as np
 from pathlib import Path
 
+from alldecays.exceptions import DataSetError
 from .abstract_data_set import AbstractDataSet
 from .data_channel import _DataChannel
-
-
-class DataSetError(Exception):
-    pass
 
 
 class DataSet(AbstractDataSet):
@@ -51,6 +52,7 @@ class DataSet(AbstractDataSet):
         self._signal_scaler = signal_scaler
 
     def get_channels(self):
+        """Return a dict of all channels."""
         return self._channels
 
     @property
@@ -122,6 +124,7 @@ class DataSet(AbstractDataSet):
         self._signal_scaler = new_value
 
     def add_channel(self, name, channel_path=None):
+        """Add a channel to the DataSet."""
         if channel_path is None:
             channel_path = Path(name)
             name = channel_path.stem
@@ -141,10 +144,12 @@ class DataSet(AbstractDataSet):
         )
 
     def add_channels(self, channel_path_dict):
+        """Convenience wrapper around `add_channel`."""
         for name, channel_path in channel_path_dict.items():
             self.add_channel(name, channel_path)
 
     def drop_channels(self, names):
+        """Remove channels from the DataSet by name."""
         for name in names:
             self._channels.pop(name)
 

@@ -1,3 +1,4 @@
+"""Adaptation of GaussianLeastSquares fit mode with binomial uncertainties."""
 import scipy.stats.distributions as dist
 
 from .gaussian_least_squares import LeastSquares
@@ -24,6 +25,7 @@ def binomialProportionMeanAndCL(total_h, pass_h, cl=0.683, a=1, b=1):
 
 
 def get_binomial_1sigma_simplified(x):
+    """Wraps binomialProportionMeanAndCL."""
     mean, err_lower, err_upper = binomialProportionMeanAndCL(x.sum(), x)
     return (err_lower + err_upper) / 2.0
 
@@ -39,4 +41,5 @@ class BinomialLeastSquares(LeastSquares):
     """
 
     def variance_maker(self, y_dict):
+        """Get the binomial variance given the observed counts per box."""
         return {k: get_binomial_1sigma_simplified(v) ** 2 for k, v in y_dict.items()}

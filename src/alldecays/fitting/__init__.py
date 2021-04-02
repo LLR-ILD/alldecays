@@ -1,7 +1,6 @@
-from .fit import Fit, InvalidFitException
+from .fit import Fit
 
 
 __all__ = [
     "Fit",
-    "InvalidFitException",
 ]

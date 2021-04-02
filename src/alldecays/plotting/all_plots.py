@@ -1,3 +1,4 @@
+"""A function that runs all defined and possible plots at once."""
 from pathlib import Path
 
 from .channel import all_channel_plots

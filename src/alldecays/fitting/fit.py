@@ -1,17 +1,11 @@
+"""The Fit class."""
 import numpy as np
 import tqdm
 
+from alldecays.exceptions import FitException, InvalidFitException
 from ..data_handling.abstract_data_set import AbstractDataSet
 from .plugins import get_fit_mode
 from .toy_values import ToyValues
-
-
-class FitException(Exception):
-    pass
-
-
-class InvalidFitException(FitException):
-    pass
 
 
 default_fit_mode = "GaussianLeastSquares"
@@ -19,6 +13,7 @@ get_fit_mode(default_fit_mode)  # To make sure that this is a valid choice.
 
 
 def default_fit_step(minuit_object):
+    """Calls on a minuit object to perform in the fit step."""
     minuit_object.migrad(ncall=10_000)
 
 
@@ -88,6 +83,7 @@ class Fit:
         return self.fit_mode.Minuit
 
     def run_fit(self):
+        """Peform the Minuitfit step that was specified during initialization."""
         self._fit_step(self.Minuit)
         if (
             not self.Minuit.valid
@@ -102,7 +98,11 @@ class Fit:
         return self.Minuit
 
     def fill_toys(self, n_toys=100, rng=None, store_channel_counts=False):
-        """TODO: Multiprocessing"""
+        """Throw toys for all the channels in the data_set and perform the fit.
+
+        Note: By construction, all channels are statistically independent.
+        TODO: Multiprocessing
+        """
         if rng is None:
             rng = self.fit_mode.rng
         if store_channel_counts and n_toys >= 100:

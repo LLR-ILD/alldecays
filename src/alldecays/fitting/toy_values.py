@@ -1,4 +1,9 @@
+"""The toy values class."""
+
+
 class ToyValues:
+    """Storage class from results of a toy fit run."""
+
     def __init__(
         self,
         internal,

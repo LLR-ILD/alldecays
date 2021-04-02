@@ -1,13 +1,11 @@
+"""Class for loading a data channel."""
 import numpy as np
 import pandas as pd
 from pathlib import Path
 
-from .util import polarization_cases, get_polarization_weights
+from alldecays.exceptions import DataChannelError
+from .util import _polarization_cases, get_polarization_weights
 from .pure_data_channel import _PureDataChannel
-
-
-class DataChannelError(Exception):
-    pass
 
 
 class _DataChannel:
@@ -70,16 +68,16 @@ class _DataChannel:
         csv_path = Path(channel_path)
         dir_files = list(csv_path.glob("*.csv"))
         file_stems = set(map(lambda p: p.stem, dir_files))
-        if not file_stems.issuperset(polarization_cases):
+        if not file_stems.issuperset(_polarization_cases):
             txt = f"Missing polarized data file in {str(csv_path)}."
             if len(file_stems) == 0:
                 txt += "\nNone found."
             else:
                 txt += "\n" + f"Only found {sorted(file_stems)}."
-            txt += f" We need: {polarization_cases}."
+            txt += f" We need: {_polarization_cases}."
             raise DataChannelError(txt)
         for pure_path in dir_files:
-            if pure_path.stem in polarization_cases:
+            if pure_path.stem in _polarization_cases:
                 pure_channel_store[pure_path.stem] = _PureDataChannel(
                     pure_path, self.decay_names
                 )
@@ -207,6 +205,11 @@ class _DataChannel:
         return txt
 
     def get_expected_counts(self, data_brs=None):
+        """Get the expected counts for this channel.
+
+        This uses statistics that are independent from those
+        used for the `mc_matrix` in the likelihood building.
+        """
         if data_brs is None:
             data_brs = self.data_brs
         else:
@@ -225,6 +228,7 @@ class _DataChannel:
         return expected_counts
 
     def get_toys(self, size=None, data_brs=None, rng=None):
+        """Smear the expected counts with respect to statistical uncertainties."""
         expected_counts = self.get_expected_counts(data_brs)
         n_data = int(sum(expected_counts))
         box_probabilities = expected_counts / sum(expected_counts)

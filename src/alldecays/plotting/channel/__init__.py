@@ -1,3 +1,4 @@
+"""Plotting options for data channels."""
 import matplotlib.pyplot as plt
 from pathlib import Path
 

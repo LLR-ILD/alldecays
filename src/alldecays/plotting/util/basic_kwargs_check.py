@@ -1,3 +1,4 @@
+"""Keyword argument check."""
 plotting_keywords = {
     "combine_bkg",
     "combine_boxes",

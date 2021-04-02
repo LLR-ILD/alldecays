@@ -1,3 +1,4 @@
+"""Per-channel plotting in the 2D processes-boxes space."""
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -29,6 +30,7 @@ def _my_format(val):
 
 
 def _plot_matrix(matrix, ax, **kwargs):
+    """DataFrame with floats -> 2D heatmap on `ax`."""
     basic_kwargs_check(**kwargs)
     if "experiment_tag" in kwargs:
         get_experiment_tag(kwargs["experiment_tag"])(ax)

@@ -1,7 +1,8 @@
+"""Combination of data sets class"""
 import numpy as np
 
+from alldecays.exceptions import DataSetError
 from .abstract_data_set import AbstractDataSet
-from .data_set import DataSetError
 
 
 class CombinedDataSet(AbstractDataSet):
@@ -35,6 +36,7 @@ class CombinedDataSet(AbstractDataSet):
             self._validate_data_set(ds)
 
     def _validate_data_set(self, ds):
+        """Validate that a dataset fits to this CombinedDataSet."""
         assert self._decay_names == ds._decay_names
         # Note: You get an AssertionError when you initiate the CombinedDataSet
         # with the default values, but try to add a DataSet with non-default values.
@@ -54,6 +56,7 @@ class CombinedDataSet(AbstractDataSet):
         return channels
 
     def get_channels(self):
+        """Return a dict of all channels."""
         return self._channels
 
     @property
@@ -107,6 +110,7 @@ class CombinedDataSet(AbstractDataSet):
         self._signal_scaler = new_value
 
     def add_data_sets(self, data_set_dict):
+        """Combine the specified DataSet(s) into this CombinedDataSet."""
         for prefix, ds in data_set_dict.items():
             self._validate_data_set(ds)
             if prefix in self._data_sets:

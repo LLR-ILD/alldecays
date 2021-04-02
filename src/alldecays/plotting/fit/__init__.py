@@ -1,3 +1,4 @@
+"""Plotting options for fits."""
 from ..util import basic_kwargs_check  # , get_experiment_tag
 
 

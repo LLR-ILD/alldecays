@@ -1,4 +1,5 @@
-polarization_cases = sorted(["eLpL", "eLpR", "eRpL", "eRpR"])
+"""Utility code for polarization handling"""
+_polarization_cases = sorted(["eLpL", "eLpR", "eRpL", "eRpR"])
 
 
 def get_polarization_weights(pol=(0.8, -0.3)):

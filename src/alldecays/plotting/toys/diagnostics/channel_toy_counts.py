@@ -1,3 +1,4 @@
+"""Define per.channel plots for the toy box counts."""
 import matplotlib.pyplot as plt
 import numpy as np
 

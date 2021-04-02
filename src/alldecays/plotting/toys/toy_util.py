@@ -1,3 +1,4 @@
+"""Utility functions for toy plots."""
 from alldecays.fitting.toy_values import ToyValues
 
 

@@ -1,3 +1,4 @@
+"""Plotting options for fits with toy study."""
 import matplotlib.pyplot as plt
 from pathlib import Path
 
@@ -7,6 +8,7 @@ from .toy_util import get_valid_toy_values
 
 
 def diagnostics_plots(fit, plot_folder=None, **kwargs):
+    """Run all diagnostics plots on a fit with toy study."""
     figs = {}
     try:
         get_valid_toy_values(fit, channel_counts_needed=True)
