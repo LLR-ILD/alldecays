@@ -13,7 +13,7 @@ class FitParameters:
     errors: np.ndarray
     covariance: np.ndarray
     starting_values: np.ndarray
-    param_space: str
+    param_space: str = "physics"
     is_from_toys: bool = False
 
 

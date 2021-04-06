@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 from pathlib import Path
 
+from .comparison import compare_errors_only, compare_values_only, compare_values
 from .correlations_plot import fit_correlations
 from ..util import basic_kwargs_check, valid_param_spaces
 
@@ -35,10 +36,20 @@ def all_fit_plots(fit, plot_folder=None, **kwargs):
             fit_correlations(fit, ax, param_space, use_toys, **kwargs)
             save_wrap(fig, name)
 
+    fig = compare_values({"fit": fit}, **kwargs)
+    save_wrap(fig, "fit_values")
+
+    fig, ax = plt.subplots(figsize=(4, 3))
+    compare_errors_only({"fit": fit}, ax, **kwargs)
+    save_wrap(fig, "fit_errors")
+
     return figs
 
 
 __all__ = [
     "all_fit_plots",
+    "compare_errors_only",
+    "compare_values_only",
+    "compare_values",
     "fit_correlations",
 ]
