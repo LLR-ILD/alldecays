@@ -36,3 +36,28 @@ class ToyValues:
 
     def __repr__(self):
         return f"{self.__class__.__name__}({len(self)} draws)"
+
+    def get_copy_after_mask(self, mask):
+        """Get a ToyValues object from only the toys passing a mask.
+
+        This can especially be useful for (temporarily) restricting the used
+        toys for some plots or calculations.
+
+        Example:
+            all_toys = fit.toys
+            mask = all_toys.accurate
+            accurate_toys = all_toys.get_copy_after_mask(mask)
+            fit.toys = accurate_toys
+        """
+        if self._channel_counts is not None:
+            ccc = [cc for i, cc in enumerate(self._channel_counts) if mask[i]]
+        else:
+            ccc = None
+        return ToyValues(
+            internal=self.internal[mask],
+            physics=self.physics[mask],
+            valid=self.valid[mask],
+            accurate=self.accurate[mask],
+            nfcn=self.nfcn[mask],
+            channel_counts=ccc,
+        )

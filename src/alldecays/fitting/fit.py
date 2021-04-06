@@ -17,6 +17,17 @@ def default_fit_step(minuit_object):
     minuit_object.migrad(ncall=10_000)
 
 
+_problematic_fits_text = """WARNING: Some toy fits seem to not have worked properly.
+Derived quantities (e.g. a parameter correlations plot using the fit values)
+are affected by this. To (temporarily) ignore those toys, you can apply a mask:
+
+>>> all_toys = fit.toys
+>>> mask = all_toys.accurate
+>>> accurate_toys = all_toys.get_copy_after_mask(mask)
+>>> fit.toys = accurate_toys
+"""
+
+
 class Fit:
     """Wrapper around a Minuit fitting procedure on a DataSet.
 
@@ -146,6 +157,9 @@ class Fit:
                 values["inaccurate"] = sum(~accurate[: i + 1])
                 values["invalid"] = sum(~valid[: i + 1])
                 toy_range.set_postfix_str(pf_template.format(**values))
+
+        if sum(~accurate) or sum(~valid):
+            print("\n" + _problematic_fits_text)
 
         self.toys = ToyValues(
             internal,
