@@ -4,6 +4,7 @@ from pathlib import Path
 
 from ..util import basic_kwargs_check
 from .diagnostics import toy_counts_channel
+from .toy_hists import toy_hists, valid_param_spaces
 from .toy_util import get_valid_toy_values
 
 
@@ -50,7 +51,12 @@ def all_toy_plots(fit, plot_folder=None, **kwargs):
         print(str(ae))
         return figs
 
-    # Put toy plots here.
+    for param_space in valid_param_spaces:
+        toy_hists_figs = toy_hists(fit, plot_folder, param_space=param_space, **kwargs)
+        figs.update(
+            {f"toy_hists_{param_space}:{k}": v for k, v in toy_hists_figs.items()}
+        )
+
     diagnostics_figs = toy_diagnostics_plots(fit, plot_folder, **kwargs)
     figs.update({f"diagnostics:{k}": v for k, v in diagnostics_figs.items()})
     return figs
@@ -60,4 +66,5 @@ __all__ = [
     "all_toy_plots",
     "toy_counts_channel",
     "toy_diagnostics_plots",
+    "toy_hists",
 ]

@@ -4,9 +4,11 @@ plotting_keywords = {
     "combine_bkg",
     "combine_boxes",
     "experiment_tag",
+    "ignore_accuracy",
     "is_normalized",
     "no_bkg",
     "omit_zero",
+    "param_space",
 }
 
 

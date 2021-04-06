@@ -7,7 +7,7 @@ from .channel import (
     probability_matrix,
 )
 from .fit import all_fit_plots
-from .toys import all_toy_plots, toy_counts_channel, toy_diagnostics_plots
+from .toys import all_toy_plots, toy_counts_channel, toy_diagnostics_plots, toy_hists
 
 __all__ = [
     "all_plots",
@@ -19,4 +19,5 @@ __all__ = [
     "probability_matrix",
     "toy_counts_channel",
     "toy_diagnostics_plots",
+    "toy_hists",
 ]
