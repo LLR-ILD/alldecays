@@ -4,11 +4,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 
-from alldecays.plotting.util import basic_kwargs_check, get_experiment_tag
+from alldecays.plotting.util import (
+    basic_kwargs_check,
+    get_experiment_tag,
+    get_fit_parameters,
+    valid_param_spaces,
+)
 from .toy_util import get_valid_toy_values
-
-
-valid_param_spaces = ["internal", "physics"]
 
 
 def _gauss(x, mu, sigma):
@@ -16,15 +18,15 @@ def _gauss(x, mu, sigma):
     return (2 * np.pi * sigma ** 2) ** -0.5 * np.exp(-0.5 * (x - mu) ** 2 / sigma ** 2)
 
 
-def _toy_hist(params, i, ax):
+def _toy_hist(fit_params, i, ax):
     """1D toy histogram helper"""
     bins = 20
-    n_toys = params["values"].shape[0]
-    start_value = params["starting_values"][i]
-    ax.set_title(params["names"][i])
+    n_toys = fit_params.toy_values.shape[0]
+    start_value = fit_params.starting_values[i]
+    ax.set_title(fit_params.names[i])
 
     n, edges, _ = ax.hist(
-        params["values"][:, i],
+        fit_params.toy_values[:, i],
         bins,
         label="\n".join(
             [
@@ -37,9 +39,9 @@ def _toy_hist(params, i, ax):
         density=True,
     )
 
-    mask = params["not_accurate"]
+    mask = fit_params.not_accurate
     if sum(mask) > 0:
-        counts, _ = np.histogram(params["values"][mask, i], edges, density=True)
+        counts, _ = np.histogram(fit_params.toy_values[mask, i], edges, density=True)
         ax.bar(
             (edges[:-1] + edges[1:]) / 2,
             counts * sum(mask) / len(mask),
@@ -59,8 +61,8 @@ def _toy_hist(params, i, ax):
         label=f"{start_value:0.5f} SM BR",
     )
 
-    exp_br_i = params["expected_values"][i]
-    exp_err_i = params["expected_errors"][i]
+    exp_br_i = fit_params.values[i]
+    exp_err_i = fit_params.errors[i]
     ax.axvline(exp_br_i, color="black", label=f"{exp_br_i:0.5f} EECF Minimum")
     x = np.linspace(edges[0], edges[-1], 1000)
     ax.plot(
@@ -111,29 +113,19 @@ def toy_hists(
         toy_hist_folder.mkdir(exist_ok=True)
 
     toy_values = get_valid_toy_values(fit)
-    params = {}
+    fit_params = get_fit_parameters(fit, param_space, use_toys=False)
     if param_space == "internal":
-        params["names"] = fit.Minuit.parameters
-        params["expected_values"] = fit.Minuit.values
-        params["expected_errors"] = fit.Minuit.errors
-        params["values"] = toy_values.internal
-        params["starting_values"] = fit.fit_mode.transform_to_internal(
-            fit._data_set.fit_start_brs
-        )
+        fit_params.toy_values = toy_values.internal
     elif param_space == "physics":
-        params["names"] = fit.fit_mode.parameters
-        params["expected_values"] = fit.fit_mode.values
-        params["expected_errors"] = fit.fit_mode.errors
-        params["values"] = toy_values.physics
-        params["starting_values"] = fit._data_set.fit_start_brs
+        fit_params.toy_values = toy_values.physics
     else:
         raise ValueError(f"`param_space` must be one of {valid_param_spaces}.")
-    params["not_accurate"] = [] if ignore_accuracy else ~toy_values.accurate
+    fit_params.not_accurate = [] if ignore_accuracy else ~toy_values.accurate
 
     figs = {}
-    for i, name in enumerate(params["names"]):
+    for i, name in enumerate(fit_params.names):
         fig, ax = plt.subplots(figsize=(4, 4))
-        _toy_hist(params, i, ax)
+        _toy_hist(fit_params, i, ax)
         if experiment_tag:
             get_experiment_tag(experiment_tag)(ax)
         if plot_folder is not None:

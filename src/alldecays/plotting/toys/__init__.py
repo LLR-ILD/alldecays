@@ -2,9 +2,9 @@
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-from ..util import basic_kwargs_check
+from ..util import basic_kwargs_check, valid_param_spaces
 from .diagnostics import toy_counts_channel
-from .toy_hists import toy_hists, valid_param_spaces
+from .toy_hists import toy_hists
 from .toy_util import get_valid_toy_values
 
 

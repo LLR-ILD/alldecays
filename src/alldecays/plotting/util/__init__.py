@@ -3,6 +3,7 @@ import numpy as np
 
 from .basic_kwargs_check import basic_kwargs_check
 from .experiment_tags import get_experiment_tag
+from .get_fit_parameters import get_fit_parameters, valid_param_spaces
 
 
 def get_expected_matrix(channel):
@@ -20,4 +21,6 @@ __all__ = [
     "basic_kwargs_check",
     "get_expected_matrix",
     "get_experiment_tag",
+    "get_fit_parameters",
+    "valid_param_spaces",
 ]
