@@ -6,7 +6,7 @@ from .channel import (
     expected_counts_matrix,
     probability_matrix,
 )
-from .fit import all_fit_plots
+from .fit import all_fit_plots, fit_correlations
 from .toys import all_toy_plots, toy_counts_channel, toy_diagnostics_plots, toy_hists
 
 __all__ = [
@@ -16,6 +16,7 @@ __all__ = [
     "all_toy_plots",
     "box_counts",
     "expected_counts_matrix",
+    "fit_correlations",
     "probability_matrix",
     "toy_counts_channel",
     "toy_diagnostics_plots",

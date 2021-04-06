@@ -6,6 +6,8 @@ from dataclasses import dataclass
 
 @dataclass
 class FitParameters:
+    """Data class for fitting parameters that are needed for plotting."""
+
     names: List[str]
     values: np.ndarray
     errors: np.ndarray
@@ -19,6 +21,7 @@ valid_param_spaces = ["internal", "physics"]
 
 
 def _get_fit_parameters_from_fit(fit, param_space):
+    """Helper for get_fit_parameters"""
     if param_space == "internal":
         fp = FitParameters(
             names=fit.Minuit.parameters,
@@ -45,6 +48,7 @@ def _get_fit_parameters_from_fit(fit, param_space):
 
 
 def _get_fit_parameters_from_toys(fit, param_space):
+    """Helper for get_fit_parameters"""
     if param_space == "internal":
         covariance = np.cov(fit.toys.internal.T)
         fp = FitParameters(
