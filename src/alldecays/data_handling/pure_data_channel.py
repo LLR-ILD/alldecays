@@ -107,7 +107,7 @@ class _PureDataChannel:
             txt += "\nIf this is expected behavior (e.g. for a specific pure polarization),"
             txt += "\nsimply add zero-count rows for each channel."
             raise Exception(txt)
-        df.reindex(
+        df = df.reindex(
             self.decay_names + sorted(i for i in df.index if i not in self.decay_names)
         )
         return df
