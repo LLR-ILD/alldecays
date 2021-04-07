@@ -42,4 +42,7 @@ class BinomialLeastSquares(LeastSquares):
 
     def variance_maker(self, y_dict):
         """Get the binomial variance given the observed counts per box."""
-        return {k: get_binomial_1sigma_simplified(v) ** 2 for k, v in y_dict.items()}
+        return {
+            k: v.sum() ** 2 * get_binomial_1sigma_simplified(v) ** 2
+            for k, v in y_dict.items()
+        }
