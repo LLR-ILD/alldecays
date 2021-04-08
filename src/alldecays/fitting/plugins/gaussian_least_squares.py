@@ -37,7 +37,7 @@ class LeastSquares(AbstractFitPlugin):
         y_variance = self.variance_maker(y)
 
         def fcn(x):
-            return 1 * sum(
+            return 0.5 * sum(
                 (
                     np.power(
                         M[n].dot(
@@ -53,7 +53,7 @@ class LeastSquares(AbstractFitPlugin):
                 for n in M.keys()
             )
 
-        fcn.errordef = Minuit.LEAST_SQUARES
+        fcn.errordef = Minuit.LIKELIHOOD
         return fcn
 
     def transform_to_internal(self, values):

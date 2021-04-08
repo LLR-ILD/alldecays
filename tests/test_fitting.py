@@ -28,7 +28,7 @@ def test_limit_setting(data_set1):
 
 
 @pytest.mark.parametrize("fit_mode_name", available_fit_modes.keys())
-def test_fit_mode_physics_parameter_consistency(fit_mode_name, data_set1, capsys):
+def test_fit_mode_physics_parameter_consistency(fit_mode_name, data_set1):
     fit = alldecays.Fit(data_set1, fit_mode=fit_mode_name)
     m = fit.fit_mode
     n_physics_params = len(m.parameters)
@@ -39,12 +39,21 @@ def test_fit_mode_physics_parameter_consistency(fit_mode_name, data_set1, capsys
         assert m.covariance.shape == (n_physics_params, n_physics_params)
         assert m.errors ** 2 == pytest.approx(m.covariance.diagonal())
 
+
+@pytest.mark.parametrize("fit_mode_name", available_fit_modes.keys())
+def test_fit_mode_design_choices_regression(fit_mode_name, data_set1, capsys):
+    fit = alldecays.Fit(data_set1, fit_mode=fit_mode_name)
+    m = fit.fit_mode
     if m._enforces_brs_sum_to_1:
         assert m.values.sum() == 1
     else:
         out, err = capsys.readouterr()
         expected_txt = "does not enforce the branching ratios to sum to 1"
         assert expected_txt in out
+
+    fcn = m._create_likelihood()
+    assert hasattr(fcn, "errordef")
+    assert fcn.errordef == 0.5  # Consistently use Minuit.LIKELIHOOD.
 
 
 @pytest.mark.parametrize(
