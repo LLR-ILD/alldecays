@@ -1,5 +1,6 @@
 """The Fit class."""
 import numpy as np
+import sys
 import tqdm
 
 from alldecays.exceptions import FitException, InvalidFitException
@@ -132,6 +133,7 @@ class Fit:
         accurate = np.zeros(n_toys, dtype=bool)
         nfcn = np.zeros(n_toys, dtype=int)
 
+        sys.stdout.flush()
         toy_range = tqdm.trange(n_toys, total=n_toys, unit=" toy minimizations")
         pf_template = "{inaccurate} not accurate, {invalid} invalid"
         toy_range.set_postfix_str(pf_template.format(inaccurate=0, invalid=0))
