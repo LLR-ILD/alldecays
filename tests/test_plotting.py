@@ -5,6 +5,11 @@ import alldecays
 
 
 def test_experiment_tag_ILD(fit1, test_plot_dir):
+    """As it is saving a number of files, this test is rather time-consuming.
+
+    E.g. when writing this comment: 4s out of 10s total test suite running.
+    Thereof, > 2s just for saving (with folder != None).
+    """
     tag_name = "ILD_preliminary"
     tag_text = "ILD preliminary"
 

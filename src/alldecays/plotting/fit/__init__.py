@@ -27,8 +27,12 @@ def all_fit_plots(fit, plot_folder=None, **kwargs):
                 fig.savefig(Path(plot_folder) / f"{name}.png")
         figs[name] = fig
 
+    if hasattr(fit, "toys"):
+        use_toys_options = [True, False]
+    else:
+        use_toys_options = [False]
     for param_space in valid_param_spaces:
-        for use_toys in [True, False]:
+        for use_toys in use_toys_options:
             name = f"correlations_{param_space}"
             if use_toys:
                 name += "_from_toys"
