@@ -19,7 +19,7 @@ class AbstractDataSet(ABC):
 
     @property
     @abstractmethod
-    def decay_names(self, process_name):
+    def decay_names(self):
         pass
 
     @decay_names.setter
@@ -29,7 +29,7 @@ class AbstractDataSet(ABC):
 
     @property
     @abstractmethod
-    def data_brs(self, process_name):
+    def data_brs(self):
         pass
 
     @data_brs.setter
@@ -39,7 +39,7 @@ class AbstractDataSet(ABC):
 
     @property
     @abstractmethod
-    def fit_start_brs(self, process_name):
+    def fit_start_brs(self):
         pass
 
     @fit_start_brs.setter
@@ -49,7 +49,17 @@ class AbstractDataSet(ABC):
 
     @property
     @abstractmethod
-    def signal_scaler(self, process_name):
+    def luminosity_ifb(self):
+        pass
+
+    @luminosity_ifb.setter
+    @abstractmethod
+    def luminosity_ifb(self, new_names):
+        pass
+
+    @property
+    @abstractmethod
+    def signal_scaler(self):
         pass
 
     @signal_scaler.setter

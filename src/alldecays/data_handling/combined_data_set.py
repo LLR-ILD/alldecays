@@ -99,6 +99,23 @@ class CombinedDataSet(AbstractDataSet):
             ds.fit_start_brs = new_brs
         self._fit_start_brs = new_brs
 
+    def __raise_lumi_error(self):
+        raise NotImplementedError(
+            "`luminosity_ifb` is not implemented "
+            f"for class `{self.__class__.__name__}`."
+        )
+
+    @property
+    def luminosity_ifb(self):
+        return {k: ds.luminosity_ifb for k, ds in self._data_sets.items()}
+
+    @luminosity_ifb.setter
+    def luminosity_ifb(self, new_names):
+        raise NotImplementedError(
+            "`luminosity_ifb` is not implemented for class "
+            f"`{self.__class__.__name__}`. Set this on each DataSet directly."
+        )
+
     @property
     def signal_scaler(self):
         return self._signal_scaler

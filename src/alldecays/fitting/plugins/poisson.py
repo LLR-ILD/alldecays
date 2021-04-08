@@ -10,6 +10,7 @@ class Poisson(AbstractFitPlugin):
 
     def _create_likelihood(self):
         sig_weight, bkg_weight = {}, {}
+        channel_luminosity = {}
         for name, channel in self._data_set.get_channels().items():
             bkg_box_probabilities = (
                 channel.mc_matrix[channel.bkg_names]
@@ -24,18 +25,20 @@ class Poisson(AbstractFitPlugin):
                 self._counts[name] = channel.get_toys(rng=self.rng)
             sig_weight[name] = channel.signal_cs_default * channel.signal_scaler
             bkg_weight[name] = channel.bkg_cs_default.sum()
+            channel_luminosity[name] = channel.luminosity_ifb
 
-        M = self._matrix
+        luminosity_times_M_dict = {
+            n: M * channel_luminosity[n] for n, M in self._matrix.items()
+        }
         y = self._counts
-        lumi = self._data_set.luminosity_ifb
 
         def fcn(x):
             nu = {}
-            for n, M_ch in M.items():
-                nu[n] = lumi * M_ch.dot(
+            for n, luminosity_times_M in luminosity_times_M_dict.items():
+                nu[n] = luminosity_times_M.dot(
                     np.concatenate([sig_weight[n] * x, [bkg_weight[n]]])
                 )
-            return sum(nu[n].sum() - y[n].dot(np.log(nu[n])) for n in M.keys())
+            return sum(nu[n].sum() - y[n].dot(np.log(nu[n])) for n in y.keys())
 
         fcn.errordef = Minuit.LIKELIHOOD
         return fcn
