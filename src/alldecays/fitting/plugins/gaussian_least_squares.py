@@ -37,7 +37,7 @@ class LeastSquares(AbstractFitPlugin):
         y_variance = self.variance_maker(y)
 
         def fcn(x):
-            return 2 * sum(
+            return 1 * sum(
                 (
                     np.power(
                         M[n].dot(
