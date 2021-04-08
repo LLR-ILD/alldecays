@@ -15,6 +15,7 @@ def compare_values(
     use_toys=False,
     experiment_tag=None,
     allow_unused_kwargs=False,
+    shift_x=False,
     **kwargs,
 ):
     """Comparison of the parameter values from multiple fits.
@@ -31,6 +32,8 @@ def compare_values(
             The default is False.
         experiment_tag: Add a watermark to the axis.
         allow_unused_kwargs: This can be nice to have for `all_plots`like calls.
+        shift_x: Default=False. If True, add some jitter to the x values so that
+            the fits that we want to compare do not fully overlap any more.
     """
     if allow_unused_kwargs:
         basic_kwargs_check(**kwargs)
@@ -44,6 +47,7 @@ def compare_values(
     local_kwargs["use_toys"] = use_toys
     local_kwargs["experiment_tag"] = None  # Only put watermark once (at most).
     local_kwargs["allow_unused_kwargs"] = allow_unused_kwargs
+    local_kwargs["shift_x"] = shift_x
     compare_values_only(fits, axs[0], **local_kwargs)
     local_kwargs["as_relative_coupling_error"] = False
     compare_errors_only(fits, axs[1], **local_kwargs)
@@ -89,6 +93,7 @@ def compare_values_only(
     use_toys=False,
     experiment_tag=None,
     allow_unused_kwargs=False,
+    shift_x=False,
     **kwargs,
 ):
     """Comparison of the parameter values from multiple fits.
@@ -109,6 +114,8 @@ def compare_values_only(
             The default is False.
         experiment_tag: Add a watermark to the axis.
         allow_unused_kwargs: This can be nice to have for `all_plots`like calls.
+        shift_x: Default=False. If True, add some jitter to the x values so that
+            the fits that we want to compare do not fully overlap any more.
     """
     if allow_unused_kwargs:
         basic_kwargs_check(**kwargs)
@@ -131,7 +138,7 @@ def compare_values_only(
             values, errors = _get_val_and_err(names, fit_params, fit_name)
 
         ax.errorbar(
-            _shift_x(i, x, len(fits)),
+            _shift_x(i, x, len(fits)) if shift_x else x,
             values,
             errors,
             xerr=0.3,
@@ -154,6 +161,7 @@ def compare_errors_only(
     experiment_tag=None,
     as_relative_coupling_error=True,
     allow_unused_kwargs=False,
+    shift_x=False,
     **kwargs,
 ):
     """Comparison of the parameter errors from multiple fits.
@@ -180,6 +188,8 @@ def compare_errors_only(
             Reformulating it as a coupling introduces a factor 1/2.
             This is more convenient for a comparison with external results.
         allow_unused_kwargs: This can be nice to have for `all_plots`like calls.
+        shift_x: Default=False. If True, add some jitter to the x values so that
+            the fits that we want to compare do not fully overlap any more.
     """
     if allow_unused_kwargs:
         basic_kwargs_check(**kwargs)
@@ -200,7 +210,7 @@ def compare_errors_only(
             values, errors = _get_val_and_err(names, fit_params, fit_name)
         if as_relative_coupling_error:
             errors = errors / values / 2  # From BR or CS to coupling: / 2.
-        x_i = _shift_x(i, x, len(fits))
+        x_i = _shift_x(i, x, len(fits)) if shift_x else x
         m = "*" if i == 0 else "_"
         ax.scatter(x_i, errors, marker=m, color=f"C{i+1}", label=fit_name)
         if as_relative_coupling_error:
