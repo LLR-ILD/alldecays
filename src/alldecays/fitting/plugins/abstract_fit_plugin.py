@@ -10,7 +10,14 @@ class AbstractFitPlugin(ABC):
     definitions and parameter transformations.
     """
 
-    def __init__(self, data_set, use_expected_counts=True, rng=None, has_limits=False):
+    def __init__(
+        self,
+        data_set,
+        use_expected_counts=True,
+        rng=None,
+        has_limits=False,
+        print_brs_sum_not_1=True,
+    ):
         self._data_set = data_set
         self._use_expected_counts = use_expected_counts
         self.rng = rng
@@ -21,6 +28,14 @@ class AbstractFitPlugin(ABC):
         internal_starters = self.transform_to_internal(data_set.fit_start_brs)
         self.Minuit = Minuit(fcn, internal_starters)
         self.has_limits = has_limits
+
+        if not self._enforces_brs_sum_to_1 and print_brs_sum_not_1:
+            print(
+                f"INFO: The chosen minimizer plugin {self.__class__.__name__} "
+                "does not enforce the branching ratios to sum to 1. \n"
+                "      On top of being conceptually problematic, this will break "
+                "if the signal cross section does not match with the expectation."
+            )
 
     def __repr__(self):
         return self.__class__.__name__
@@ -75,3 +90,9 @@ class AbstractFitPlugin(ABC):
         else:
             inf = float("infinity")
             self.Minuit.limits = [(-inf, inf)] * len(self.Minuit.limits)
+
+    @property
+    @abstractmethod
+    def _enforces_brs_sum_to_1(self) -> bool:
+        """A True/False hook to allow some relaxing for sub-ideal likelihood descriptions."""
+        pass

@@ -64,6 +64,7 @@ class Fit:
         rng=None,
         has_limits=False,
         raise_invalid_fit_exception=True,
+        print_brs_sum_not_1=True,
     ):
         if not isinstance(data_set, AbstractDataSet):
             raise FitException(
@@ -75,7 +76,9 @@ class Fit:
         if fit_mode is None:
             fit_mode = default_fit_mode
         FitModeClass = get_fit_mode(fit_mode)
-        self.fit_mode = FitModeClass(data_set, use_expected_counts, rng, has_limits)
+        self.fit_mode = FitModeClass(
+            data_set, use_expected_counts, rng, has_limits, print_brs_sum_not_1
+        )
         if fit_step is None:
             fit_step = default_fit_step
         self._fit_step = fit_step
@@ -144,6 +147,7 @@ class Fit:
                 rng=rng,
                 has_limits=self.fit_mode.has_limits,
                 raise_invalid_fit_exception=self._raise_invalid_fit_exception,
+                print_brs_sum_not_1=False,
             )
             internal[i] = toy_fit.Minuit.values
             physics[i] = toy_fit.fit_mode.values

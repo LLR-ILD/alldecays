@@ -80,6 +80,23 @@ class LeastSquares(AbstractFitPlugin):
             print("WARNING: Covariance not yet calculated by a Minuit fit.")
         return np.array(self.Minuit.covariance)
 
+    @property
+    def _enforces_brs_sum_to_1(self):
+        """TODO? Conceptually, this actually seems rather hard to fix.
+
+        In principle, `values -> values / sum(values)` would fix this:
+            p_i = q_i / ∑q_k,
+            J_ij = ∂p_i / ∂q_j,
+            V_new = Jᵀ V J.
+        Even for `∑q_k ≈ 1`, this can severely change the variances.
+        Arguably these new variances are more correct.
+        But this adds some non-obvious behavior to this plugin.
+
+        The current opinion is that if `∑BR = 1` is desired,
+        a different plugin should be chosen.
+        """
+        return False
+
 
 class GaussianLeastSquares(LeastSquares):
     """The standard chi-square procedure.
