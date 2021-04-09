@@ -16,7 +16,7 @@ class LeastSquares(AbstractFitPlugin):
         raise NotImplementedError
 
     def _create_likelihood(self):
-        y, M, n_bkg = self._prepare_numpy_y_M(return_dummy_M=False)
+        y, M, n_bkg = self._prepare_numpy_y_M()
         y_variance = self.variance_maker(y)
 
         def fcn(x):

@@ -66,6 +66,7 @@ class Fit:
         has_limits=False,
         raise_invalid_fit_exception=True,
         print_brs_sum_not_1=True,
+        _precalculated_M=None,
     ):
         if not isinstance(data_set, AbstractDataSet):
             raise FitException(
@@ -78,7 +79,12 @@ class Fit:
             fit_mode = default_fit_mode
         FitModeClass = get_fit_mode(fit_mode)
         self.fit_mode = FitModeClass(
-            data_set, use_expected_counts, rng, has_limits, print_brs_sum_not_1
+            data_set,
+            use_expected_counts,
+            rng,
+            has_limits,
+            print_brs_sum_not_1,
+            _precalculated_M,
         )
         if fit_step is None:
             fit_step = default_fit_step
@@ -150,6 +156,7 @@ class Fit:
                 has_limits=self.fit_mode.has_limits,
                 raise_invalid_fit_exception=self._raise_invalid_fit_exception,
                 print_brs_sum_not_1=False,
+                _precalculated_M=self.fit_mode._precalculated_M,
             )
             internal[i] = toy_fit.Minuit.values
             physics[i] = toy_fit.fit_mode.values
@@ -164,8 +171,8 @@ class Fit:
                 values["invalid"] = sum(~valid[: i + 1])
                 toy_range.set_postfix_str(pf_template.format(**values))
 
-        if sum(~accurate) or sum(~valid):
-            print("\n" + _problematic_fits_text)
+        # if sum(~accurate) or sum(~valid):
+        #     print("\n" + _problematic_fits_text)
 
         self.toys = ToyValues(
             internal,

@@ -17,10 +17,12 @@ class AbstractFitPlugin(ABC):
         rng=None,
         has_limits=False,
         print_brs_sum_not_1=True,
+        _precalculated_M=None,  # Can be inherited in toy studies,
     ):
         self._data_set = data_set
         self._use_expected_counts = use_expected_counts
         self.rng = rng
+        self._precalculated_M = _precalculated_M
         self._counts = {}
 
         fcn = self._create_likelihood()
@@ -96,14 +98,8 @@ class AbstractFitPlugin(ABC):
         """A True/False hook to allow some relaxing for sub-ideal likelihood descriptions."""
         pass
 
-    def _prepare_numpy_y_M(self, return_dummy_M=False):
-        """Prepare the MC counts matrix and box counts as numpy arrays.
-
-        Args:
-            return_dummy_M:
-                If True, only build the array for y. This is useful for cases
-                were M is already available (e.g. toy fits, where only y changes).
-        """
+    def _prepare_numpy_y_M(self):
+        """Prepare the MC counts matrix and box counts as numpy arrays."""
         data_set = self._data_set
 
         n_boxes_per_channel = {
@@ -113,9 +109,7 @@ class AbstractFitPlugin(ABC):
         n_bkg = 1
         y = np.empty(n_boxes)
 
-        if return_dummy_M:
-            M = None
-        else:
+        if self._precalculated_M is None:
             n_parameters = len(data_set.decay_names)
             M = np.empty((n_boxes, n_parameters + n_bkg))
 
@@ -132,7 +126,7 @@ class AbstractFitPlugin(ABC):
             y[i_start:i_stop] = self._counts[name]
 
             # Fill M (if necessary)
-            if not return_dummy_M:
+            if self._precalculated_M is None:
                 signal_factor = channel.signal_cs_default * channel.signal_scaler
                 M[i_start:i_stop, :-n_bkg] = channel.mc_matrix[channel.decay_names]
                 M[i_start:i_stop, :-n_bkg] *= signal_factor
@@ -145,4 +139,7 @@ class AbstractFitPlugin(ABC):
                 M[i_start:i_stop, -n_bkg] = bkg_box_probabilities
                 M[i_start:i_stop, -n_bkg] *= channel.bkg_cs_default.sum()
                 M[i_start:i_stop, :] *= channel.luminosity_ifb
-        return y, M, n_bkg
+
+        if self._precalculated_M is None:
+            self._precalculated_M = M
+        return y, self._precalculated_M, n_bkg

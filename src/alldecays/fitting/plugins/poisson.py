@@ -9,7 +9,7 @@ class Poisson(AbstractFitPlugin):
     """A Poisson likelihood fit."""
 
     def _create_likelihood(self):
-        y, M, n_bkg = self._prepare_numpy_y_M(return_dummy_M=False)
+        y, M, n_bkg = self._prepare_numpy_y_M()
 
         def fcn(x):
             nu = M[:, :-n_bkg].dot(x) + M[:, -n_bkg:].sum(axis=1)
