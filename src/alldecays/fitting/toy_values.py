@@ -11,6 +11,7 @@ class ToyValues:
         valid,
         accurate,
         nfcn,
+        fval,
         channel_counts=None,
     ):
         self.internal = internal
@@ -18,6 +19,7 @@ class ToyValues:
         self.valid = valid
         self.accurate = accurate
         self.nfcn = nfcn
+        self.fval = fval
         self._channel_counts = channel_counts
         self._validate_lengths()
 
@@ -28,6 +30,7 @@ class ToyValues:
         assert n_toys == self.valid.shape[0]
         assert n_toys == self.accurate.shape[0]
         assert n_toys == self.nfcn.shape[0]
+        assert n_toys == self.fval.shape[0]
         if self._channel_counts is not None:
             assert n_toys == len(self._channel_counts)
 
@@ -59,5 +62,6 @@ class ToyValues:
             valid=self.valid[mask],
             accurate=self.accurate[mask],
             nfcn=self.nfcn[mask],
+            fval=self.fval[mask],
             channel_counts=ccc,
         )

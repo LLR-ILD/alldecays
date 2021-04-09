@@ -20,9 +20,11 @@ class Poisson(AbstractFitPlugin):
             else:
                 return nu.sum() - y.dot(np.log(np.where(y_mask_log, nu, 1)))
 
+        zero_shift = poisson_likelihood(y)
+
         def fcn(x):
             nu = M[:, :-n_bkg].dot(x) + M[:, -n_bkg:].sum(axis=1)
-            return poisson_likelihood(nu)
+            return poisson_likelihood(nu) - zero_shift
 
         fcn.errordef = Minuit.LIKELIHOOD
         return fcn

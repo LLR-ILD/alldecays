@@ -138,6 +138,7 @@ class Fit:
         valid = np.zeros(n_toys, dtype=bool)
         accurate = np.zeros(n_toys, dtype=bool)
         nfcn = np.zeros(n_toys, dtype=int)
+        fval = np.zeros(n_toys, dtype=float)
 
         sys.stdout.flush()
         toy_range = tqdm.trange(n_toys, total=n_toys, unit=" toy minimizations")
@@ -163,6 +164,7 @@ class Fit:
             valid[i] = toy_fit.Minuit.valid
             accurate[i] = toy_fit.Minuit.accurate
             nfcn[i] = toy_fit.Minuit.nfcn
+            fval[i] = toy_fit.Minuit.fval
             if store_channel_counts:
                 channel_counts[i] = toy_fit.fit_mode._counts
             if not toy_fit.Minuit.accurate:
@@ -180,6 +182,7 @@ class Fit:
             valid,
             accurate,
             nfcn,
+            fval,
             channel_counts if store_channel_counts else None,
         )
         return self.toys
