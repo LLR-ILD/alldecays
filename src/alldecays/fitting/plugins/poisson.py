@@ -11,9 +11,18 @@ class Poisson(AbstractFitPlugin):
     def _create_likelihood(self):
         y, M, n_bkg = self._prepare_numpy_y_M()
 
+        y_mask_log = y != 0
+        masking_not_needed = all(y_mask_log)
+
+        def poisson_likelihood(nu):
+            if masking_not_needed:
+                return nu.sum() - y.dot(np.log(nu))
+            else:
+                return nu.sum() - y.dot(np.log(np.where(y_mask_log, nu, 1)))
+
         def fcn(x):
             nu = M[:, :-n_bkg].dot(x) + M[:, -n_bkg:].sum(axis=1)
-            return nu.sum() - y.dot(np.log(nu))
+            return poisson_likelihood(nu)
 
         fcn.errordef = Minuit.LIKELIHOOD
         return fcn

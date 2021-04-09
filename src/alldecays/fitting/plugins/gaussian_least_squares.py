@@ -84,5 +84,9 @@ class GaussianLeastSquares(LeastSquares):
     """
 
     def variance_maker(self, y):
-        """Get the variance given the observed counts per box."""
-        return y
+        """Get the variance given the observed counts per box.
+
+        Other choices than 0.5 could be imagined to replace the problematic
+        0-variance.
+        """
+        return np.where(y != 0, y, 0.5)
