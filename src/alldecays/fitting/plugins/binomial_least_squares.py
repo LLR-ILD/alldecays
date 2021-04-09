@@ -1,4 +1,5 @@
 """Adaptation of GaussianLeastSquares fit mode with binomial uncertainties."""
+import numpy as np
 import scipy.stats.distributions as dist
 
 from .gaussian_least_squares import LeastSquares
@@ -40,9 +41,14 @@ class BinomialLeastSquares(LeastSquares):
     to models that predict exactly 0 counts in the box.
     """
 
-    def variance_maker(self, y_dict):
+    def variance_maker(self, y):
         """Get the binomial variance given the observed counts per box."""
-        return {
-            k: v.sum() ** 2 * get_binomial_1sigma_simplified(v) ** 2
-            for k, v in y_dict.items()
-        }
+        y_variance = np.empty_like(y)
+        i_stop = 0
+        for name, counts in self._counts.items():
+            i_start = i_stop
+            i_stop = i_start + len(counts)
+            y_variance[i_start:i_stop] = (
+                counts.sum() ** 2 * get_binomial_1sigma_simplified(counts) ** 2
+            )
+        return y_variance

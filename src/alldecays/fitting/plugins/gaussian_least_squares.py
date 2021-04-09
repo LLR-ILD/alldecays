@@ -16,42 +16,12 @@ class LeastSquares(AbstractFitPlugin):
         raise NotImplementedError
 
     def _create_likelihood(self):
-        sig_weight, bkg_weight = {}, {}
-        for name, channel in self._data_set.get_channels().items():
-            bkg_box_probabilities = (
-                channel.mc_matrix[channel.bkg_names]
-                * channel.bkg_cs_default
-                / channel.bkg_cs_default.sum()
-            ).sum(axis=1)
-            self._matrix[name] = channel.mc_matrix[channel.decay_names].copy()
-            self._matrix[name]["bkg"] = bkg_box_probabilities
-            if self._use_expected_counts:
-                self._counts[name] = channel.get_expected_counts()
-            else:
-                self._counts[name] = channel.get_toys(rng=self.rng)
-            sig_weight[name] = channel.signal_cs_default * channel.signal_scaler
-            bkg_weight[name] = channel.bkg_cs_default.sum()
-
-        M = self._matrix
-        y = self._counts
+        y, M, n_bkg = self._prepare_numpy_y_M(return_dummy_M=False)
         y_variance = self.variance_maker(y)
 
         def fcn(x):
-            return 0.5 * sum(
-                (
-                    np.power(
-                        M[n].dot(
-                            np.concatenate([sig_weight[n] * x, [bkg_weight[n]]])
-                            / (sig_weight[n] + bkg_weight[n])
-                        )
-                        * y[n].sum()
-                        - y[n],
-                        2,
-                    )
-                    / y_variance[n]
-                ).sum()
-                for n in M.keys()
-            )
+            f_x = M[:, :-n_bkg].dot(x) + M[:, -n_bkg:].sum(axis=1)
+            return 0.5 * (np.power(y - f_x, 2) / y_variance).sum()
 
         fcn.errordef = Minuit.LIKELIHOOD
         return fcn
@@ -113,6 +83,6 @@ class GaussianLeastSquares(LeastSquares):
     TODO: Add the references we found for this issue in iminit-BRS repo.
     """
 
-    def variance_maker(self, y_dict):
+    def variance_maker(self, y):
         """Get the variance given the observed counts per box."""
-        return {k: v for k, v in y_dict.items()}
+        return y
