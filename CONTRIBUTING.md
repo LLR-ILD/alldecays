@@ -13,12 +13,12 @@ Now you have your own branch to try out new stuff.
 ## venv
 
 ```bash
-python -m venv py3  # This folder was set up to be ignored by git.
-source py3/bin/activate
+python -m venv venv  # This folder was set up to be ignored by git.
+source venv/bin/activate
 pip install -r requirements-dev.txt
 ```
 
-The python environment by removing the `py3` folder.
+The python environment by removing the `venv` folder.
 
 ## conda
 

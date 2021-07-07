@@ -1,5 +1,5 @@
 # venv
-py3/*
+venv
 
 *.py[co]
 __pycache__
