@@ -1,8 +1,9 @@
 """Simple plots based on a toy study.
 """
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
-from pathlib import Path
 
 from alldecays.plotting.util import (
     basic_kwargs_check,
@@ -10,6 +11,7 @@ from alldecays.plotting.util import (
     get_fit_parameters,
     valid_param_spaces,
 )
+
 from .toy_util import get_valid_toy_values
 
 

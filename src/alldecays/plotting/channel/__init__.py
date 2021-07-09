@@ -1,10 +1,11 @@
 """Plotting options for data channels."""
-import matplotlib.pyplot as plt
 from pathlib import Path
 
+import matplotlib.pyplot as plt
+
+from ..util import basic_kwargs_check
 from .box_counts import box_counts
 from .matrix_plots import expected_counts_matrix, probability_matrix
-from ..util import basic_kwargs_check
 
 
 def all_channel_plots(channel, plot_folder=None, **kwargs):

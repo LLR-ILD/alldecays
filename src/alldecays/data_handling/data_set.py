@@ -2,10 +2,12 @@
 
 These objects are used throughout the module to interact with the physics data.
 """
-import numpy as np
 from pathlib import Path
 
+import numpy as np
+
 from alldecays.exceptions import DataSetError
+
 from .abstract_data_set import AbstractDataSet
 from .data_channel import _DataChannel
 

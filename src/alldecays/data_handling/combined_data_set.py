@@ -2,6 +2,7 @@
 import numpy as np
 
 from alldecays.exceptions import DataSetError
+
 from .abstract_data_set import AbstractDataSet
 
 

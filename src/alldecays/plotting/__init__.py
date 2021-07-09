@@ -9,8 +9,8 @@ from .channel import (
 from .fit import (
     all_fit_plots,
     compare_errors_only,
-    compare_values_only,
     compare_values,
+    compare_values_only,
     fit_correlations,
 )
 from .toys import all_toy_plots, toy_counts_channel, toy_diagnostics_plots, toy_hists

@@ -1,11 +1,13 @@
 """Class for loading a data channel."""
-import numpy as np
-import pandas as pd
 from pathlib import Path
 
+import numpy as np
+import pandas as pd
+
 from alldecays.exceptions import DataChannelError
-from .util import _polarization_cases, get_polarization_weights
+
 from .pure_data_channel import _PureDataChannel
+from .util import _polarization_cases, get_polarization_weights
 
 
 class _DataChannel:

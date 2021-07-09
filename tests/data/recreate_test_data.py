@@ -2,9 +2,10 @@
 
 """Script that produced the test data.
 """
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from pathlib import Path
 
 
 def create_test_data():

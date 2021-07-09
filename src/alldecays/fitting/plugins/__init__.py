@@ -4,7 +4,6 @@ from .binomial_least_squares import BinomialLeastSquares
 from .gaussian_least_squares import GaussianLeastSquares
 from .poisson import Poisson
 
-
 available_fit_modes = {
     "BinomialLeastSquares": BinomialLeastSquares,
     "GaussianLeastSquares": GaussianLeastSquares,

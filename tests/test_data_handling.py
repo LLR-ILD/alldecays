@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
+from conftest import channel1_path, channel_polarized_path, decay_names
 
 import alldecays
-from conftest import channel1_path, channel_polarized_path, decay_names
 
 
 @pytest.mark.parametrize("data_type", ["polarized", "unpolarized"])

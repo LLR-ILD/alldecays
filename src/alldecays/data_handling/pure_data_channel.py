@@ -3,10 +3,10 @@
 Has a fixed polarization at creation.
 A DataChannel uses one or more of these under the hood.
 """
-import numpy as np
-import pandas as pd
 from pathlib import Path
 
+import numpy as np
+import pandas as pd
 
 cross_section_column = "cross section [fb]"
 unselected_column = "unselected"

@@ -1,10 +1,10 @@
 import datetime as dt
 from pathlib import Path
+
 import pytest
 
 import alldecays
 from alldecays.data_handling.data_channel import _DataChannel
-
 
 channel1_path = Path(__file__).parent / "data/unpolarized/channel1.csv"
 channel2_path = Path(__file__).parent / "data/unpolarized/channel2.csv"

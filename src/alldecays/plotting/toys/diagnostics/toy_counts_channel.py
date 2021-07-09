@@ -4,6 +4,7 @@ import numpy as np
 
 from alldecays.plotting.channel.matrix_plots import _my_format
 from alldecays.plotting.util import basic_kwargs_check, get_experiment_tag
+
 from ..toy_util import get_valid_toy_values
 
 

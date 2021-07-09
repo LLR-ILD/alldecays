@@ -1,13 +1,14 @@
 """The Fit class."""
-import numpy as np
 import sys
+
+import numpy as np
 import tqdm
 
 from alldecays.exceptions import FitException, InvalidFitException
+
 from ..data_handling.abstract_data_set import AbstractDataSet
 from .plugins import get_fit_mode
 from .toy_values import ToyValues
-
 
 default_fit_mode = "GaussianLeastSquares"
 get_fit_mode(default_fit_mode)  # To make sure that this is a valid choice.

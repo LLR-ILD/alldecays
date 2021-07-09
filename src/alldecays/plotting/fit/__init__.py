@@ -1,10 +1,11 @@
 """Plotting options for fits."""
-import matplotlib.pyplot as plt
 from pathlib import Path
 
-from .comparison import compare_errors_only, compare_values_only, compare_values
-from .correlations_plot import fit_correlations
+import matplotlib.pyplot as plt
+
 from ..util import basic_kwargs_check, valid_param_spaces
+from .comparison import compare_errors_only, compare_values, compare_values_only
+from .correlations_plot import fit_correlations
 
 
 def all_fit_plots(fit, plot_folder=None, **kwargs):

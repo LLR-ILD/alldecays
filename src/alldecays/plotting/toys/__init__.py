@@ -1,6 +1,7 @@
 """Plotting options for fits with toy study."""
-import matplotlib.pyplot as plt
 from pathlib import Path
+
+import matplotlib.pyplot as plt
 
 from ..util import basic_kwargs_check, valid_param_spaces
 from .diagnostics import toy_counts_channel

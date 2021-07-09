@@ -1,7 +1,7 @@
 """The interface defining class for fit modes."""
 from abc import ABC, abstractmethod
-import numpy as np
 
+import numpy as np
 from iminuit import Minuit
 
 
