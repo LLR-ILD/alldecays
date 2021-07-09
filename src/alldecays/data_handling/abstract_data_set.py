@@ -23,9 +23,11 @@ class AbstractDataSet(ABC):
         pass
 
     @decay_names.setter
-    @abstractmethod
     def decay_names(self, new_names):
-        pass
+        # See: https://github.com/python/mypy/issues/4165
+        # Since we can't also decorate this with abstract method we want to be
+        # sure that the setter doesn't actually get used as a noop.
+        raise NotImplementedError
 
     @property
     @abstractmethod
@@ -33,9 +35,11 @@ class AbstractDataSet(ABC):
         pass
 
     @data_brs.setter
-    @abstractmethod
     def data_brs(self, new_names):
-        pass
+        # See: https://github.com/python/mypy/issues/4165
+        # Since we can't also decorate this with abstract method we want to be
+        # sure that the setter doesn't actually get used as a noop.
+        raise NotImplementedError
 
     @property
     @abstractmethod
@@ -43,9 +47,11 @@ class AbstractDataSet(ABC):
         pass
 
     @fit_start_brs.setter
-    @abstractmethod
     def fit_start_brs(self, new_names):
-        pass
+        # See: https://github.com/python/mypy/issues/4165
+        # Since we can't also decorate this with abstract method we want to be
+        # sure that the setter doesn't actually get used as a noop.
+        raise NotImplementedError
 
     @property
     @abstractmethod
@@ -53,9 +59,11 @@ class AbstractDataSet(ABC):
         pass
 
     @luminosity_ifb.setter
-    @abstractmethod
     def luminosity_ifb(self, new_names):
-        pass
+        # See: https://github.com/python/mypy/issues/4165
+        # Since we can't also decorate this with abstract method we want to be
+        # sure that the setter doesn't actually get used as a noop.
+        raise NotImplementedError
 
     @property
     @abstractmethod
@@ -63,6 +71,8 @@ class AbstractDataSet(ABC):
         pass
 
     @signal_scaler.setter
-    @abstractmethod
     def signal_scaler(self, new_names):
-        pass
+        # See: https://github.com/python/mypy/issues/4165
+        # Since we can't also decorate this with abstract method we want to be
+        # sure that the setter doesn't actually get used as a noop.
+        raise NotImplementedError
