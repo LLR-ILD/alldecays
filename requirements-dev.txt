@@ -4,7 +4,7 @@ iminuit
 jupyter
 matplotlib
 numexpr
-numpy
+numpy>=1.18
 pandas
 pre-commit
 pytest
