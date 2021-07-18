@@ -81,7 +81,7 @@ class _DataChannel:
         for pure_path in dir_files:
             if pure_path.stem in _polarization_cases:
                 pure_channel_store[pure_path.stem] = _PureDataChannel(
-                    pure_path, self.decay_names
+                    pure_path, self.decay_names, allow_zero_signal=True
                 )
         return pure_channel_store
 

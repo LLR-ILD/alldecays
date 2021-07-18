@@ -21,9 +21,10 @@ class _PureDataChannel:
     For internal usage.
     """
 
-    def __init__(self, channel_path, decay_names):
+    def __init__(self, channel_path, decay_names, allow_zero_signal=False):
         self._channel_path = channel_path
         self._decay_names = decay_names
+        self._allow_zero_signal = allow_zero_signal
         df = self._get_dataframe()
 
         cs_default = self._get_default_cross_sections(df)
@@ -100,6 +101,15 @@ class _PureDataChannel:
         return df
 
     def _order_processes(self, df):
+        no_signal_found = len(set(self.decay_names).intersection(df.index)) == 0
+        if no_signal_found and self._allow_zero_signal:
+            zero_signal_rows = pd.DataFrame(
+                0,
+                columns=df.columns,
+                index=self.decay_names,
+            )
+            df = df.append(zero_signal_rows, verify_integrity=True)
+
         if not set(self.decay_names).issubset(df.index):
             txt = "Not all decay names were found in the channel:"
             txt += "\n" + f"{sorted(self.decay_names)=}"
