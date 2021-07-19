@@ -21,13 +21,16 @@ class _DataChannel:
         data_brs=None,
         luminosity_ifb=1_000,
         signal_scaler=1.0,
+        ignore_limited_mc_statistics_bias=False,
     ):
         self._decay_names = decay_names
         self.data_brs = self._set_brs(data_brs)
         self.luminosity_ifb = luminosity_ifb
         self.signal_scaler = signal_scaler
         self._set_initial_polarization(polarization)
-        self._pure_channels = self._link_pure_channels(channel_path)
+        self._pure_channels = self._link_pure_channels(
+            channel_path, ignore_limited_mc_statistics_bias
+        )
         self._set_polarization_dependent_values()
 
     def _set_brs(self, brs=None):
@@ -63,9 +66,13 @@ class _DataChannel:
         ):
             raise DataChannelError(f"Invalid polarization: {pol=}.")
 
-    def _link_pure_channels(self, channel_path):
+    def _link_pure_channels(self, channel_path, ignore_limited_mc_statistics_bias):
         if self.polarization is None:
-            return {"pure": _PureDataChannel(channel_path, self.decay_names)}
+            return {
+                "pure": _PureDataChannel(
+                    channel_path, self.decay_names, ignore_limited_mc_statistics_bias
+                )
+            }
         pure_channel_store = {}
         csv_path = Path(channel_path)
         dir_files = list(csv_path.glob("*.csv"))
@@ -81,7 +88,10 @@ class _DataChannel:
         for pure_path in dir_files:
             if pure_path.stem in _polarization_cases:
                 pure_channel_store[pure_path.stem] = _PureDataChannel(
-                    pure_path, self.decay_names, allow_zero_signal=True
+                    pure_path,
+                    self.decay_names,
+                    ignore_limited_mc_statistics_bias,
+                    allow_zero_signal=True,
                 )
         return pure_channel_store
 

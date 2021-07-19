@@ -21,10 +21,17 @@ class _PureDataChannel:
     For internal usage.
     """
 
-    def __init__(self, channel_path, decay_names, allow_zero_signal=False):
+    def __init__(
+        self,
+        channel_path,
+        decay_names,
+        ignore_limited_mc_statistics_bias=False,
+        allow_zero_signal=False,
+    ):
         self._channel_path = channel_path
         self._decay_names = decay_names
         self._allow_zero_signal = allow_zero_signal
+        self._ignore_limited_mc_statistics_bias = ignore_limited_mc_statistics_bias
         df = self._get_dataframe()
 
         cs_default = self._get_default_cross_sections(df)
@@ -173,11 +180,14 @@ class _PureDataChannel:
                 txt = f"Required data column is missing: {required_column}. "
                 txt += f"File: {self._channel_path}."
                 raise Exception(txt)
-        train_counts, test_counts = self._split_monte_carlo_into_two(
-            df[[c for c in df.columns if c != cross_section_column]]
-        )
-        train_proba = self._get_probabilities_from_counts(train_counts)
-        test_proba = self._get_probabilities_from_counts(test_counts)
+        counts_only = df[[c for c in df.columns if c != cross_section_column]]
+        if self._ignore_limited_mc_statistics_bias:
+            train_proba = self._get_probabilities_from_counts(counts_only)
+            test_proba = train_proba
+        else:
+            train_counts, test_counts = self._split_monte_carlo_into_two(counts_only)
+            train_proba = self._get_probabilities_from_counts(train_counts)
+            test_proba = self._get_probabilities_from_counts(test_counts)
         return train_proba, test_proba
 
     def _split_monte_carlo_into_two(self, df):

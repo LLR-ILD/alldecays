@@ -41,6 +41,7 @@ class DataSet(AbstractDataSet):
         fit_start_brs=None,
         luminosity_ifb=1_000,
         signal_scaler=1.0,
+        ignore_limited_mc_statistics_bias=False,
     ):
         self._channels = {}
         self._decay_names = decay_names
@@ -52,6 +53,7 @@ class DataSet(AbstractDataSet):
             self._fit_start_brs = self._set_brs(fit_start_brs)
         self._luminosity_ifb = luminosity_ifb
         self._signal_scaler = signal_scaler
+        self._ignore_limited_mc_statistics_bias = ignore_limited_mc_statistics_bias
 
     def get_channels(self):
         """Return a dict of all channels."""
@@ -143,6 +145,7 @@ class DataSet(AbstractDataSet):
             data_brs=self._data_brs,
             luminosity_ifb=self._luminosity_ifb,
             signal_scaler=self.signal_scaler,
+            ignore_limited_mc_statistics_bias=self._ignore_limited_mc_statistics_bias,
         )
 
     def add_channels(self, channel_path_dict):
