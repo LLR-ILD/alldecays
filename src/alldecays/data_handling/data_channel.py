@@ -152,7 +152,7 @@ class _DataChannel:
                     idx = pc.bkg_names.index(bkg_name)
                 except ValueError:
                     continue
-                self.bkg_cs_default[i] += pc.bkg_cs_default[idx] + weights[p]
+                self.bkg_cs_default[i] += pc.bkg_cs_default[idx] * weights[p]
 
     @property
     def decay_names(self):

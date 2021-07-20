@@ -39,20 +39,20 @@ def test_expected_counts(channel_polarized):
     channel = channel_polarized
 
     box_exp = channel.get_expected_counts().values
-    expected_should_be = np.array([6086.7, 5249.6, 2425.8, 4770.2])
+    expected_should_be = np.array([2790.9, 2394.5, 1706.9, 2572.2])
     assert box_exp == pytest.approx(expected_should_be, abs=1e-1)
 
     changed_brs = np.zeros_like(channel.data_brs)
     changed_brs[0] = 1
     box_changed_br = channel.get_expected_counts(data_brs=changed_brs).values
-    changed_should_be = np.array([5300.5, 5979.5, 2799.7, 4506.6])
+    changed_should_be = np.array([2004.7, 3124.4, 2080.7, 2308.6])
     assert box_changed_br == pytest.approx(changed_should_be, abs=1e-1)
 
 
 def test_toys(channel_polarized):
     rng = np.random.default_rng(1)
     one_toy = channel_polarized.get_toys(rng=rng)
-    toy_should_be = np.array([6049, 5175, 2463, 4845])
+    toy_should_be = np.array([2766, 2340, 1738, 2620])
     assert (one_toy == toy_should_be).all()
 
     size = (2, 3)
