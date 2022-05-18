@@ -142,7 +142,7 @@ class _PureDataChannel:
         can currently not be checked.
         """
         signal_strength = sum(
-            [df.loc[bkg, cross_section_column] for bkg in self.decay_names]
+            df.loc[bkg, cross_section_column] for bkg in self.decay_names
         )
         bkg_strengths = [
             df.loc[bkg, cross_section_column]

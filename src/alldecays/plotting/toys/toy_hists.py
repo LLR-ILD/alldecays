@@ -17,7 +17,7 @@ from .toy_util import get_valid_toy_values
 
 def _gauss(x, mu, sigma):
     """1D Gaussian distribution"""
-    return (2 * np.pi * sigma ** 2) ** -0.5 * np.exp(-0.5 * (x - mu) ** 2 / sigma ** 2)
+    return (2 * np.pi * sigma**2) ** -0.5 * np.exp(-0.5 * (x - mu) ** 2 / sigma**2)
 
 
 def _toy_hist(fit_params, i, ax):

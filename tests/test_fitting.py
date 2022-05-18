@@ -37,7 +37,7 @@ def test_fit_mode_physics_parameter_consistency(fit_mode_name, data_set1):
     assert fit_performed_yet  # Raised e.g. if `fit_step=lambda x: None`.
     if fit_performed_yet:
         assert m.covariance.shape == (n_physics_params, n_physics_params)
-        assert m.errors ** 2 == pytest.approx(m.covariance.diagonal())
+        assert m.errors**2 == pytest.approx(m.covariance.diagonal())
 
 
 @pytest.mark.parametrize("fit_mode_name", available_fit_modes.keys())
