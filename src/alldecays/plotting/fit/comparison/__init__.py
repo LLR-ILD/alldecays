@@ -137,10 +137,14 @@ def compare_values_only(
         else:
             values, errors = _get_val_and_err(names, fit_params, fit_name)
 
+        # This should only be necessary temporarily (tests worked in 2021).
+        # 2022-04-26 open issue in matplotlib:
+        # https://github.com/matplotlib/matplotlib/issues/22910
+        is_valid = ~np.isnan(values)
         ax.errorbar(
-            _shift_x(i, x, len(fits)) if shift_x else x,
-            values,
-            errors,
+            _shift_x(i, x[is_valid], len(fits)) if shift_x else x[is_valid],
+            values[is_valid],
+            errors[is_valid],
             xerr=0.3,
             fmt="o",
             label=fit_name,
