@@ -76,23 +76,34 @@ class _DataChannel:
         pure_channel_store = {}
         csv_path = Path(channel_path)
         dir_files = list(csv_path.glob("*.csv"))
-        file_stems = set(map(lambda p: p.stem, dir_files))
-        if not file_stems.issuperset(_polarization_cases):
+        file_stems = {p.stem: p for p in dir_files}
+        train_stems = {}
+        test_stems = {}
+        for pol, pure_path in file_stems.items():
+            if pol.startswith("train_"):
+                train_stems[pol[len("train_") :]] = pure_path
+            if pol.startswith("test_"):
+                test_stems[pol[len("test_") :]] = pure_path
+        if set(train_stems).issuperset(_polarization_cases):
+            assert set(test_stems).issuperset(_polarization_cases)
+            file_stems = train_stems
+        elif set(file_stems).issuperset(_polarization_cases):
+            pass
+        else:
             txt = f"Missing polarized data file in {str(csv_path)}."
             if len(file_stems) == 0:
                 txt += "\nNone found."
             else:
-                txt += "\n" + f"Only found {sorted(file_stems)}."
+                txt += "\n" + f"Only found {sorted(set(file_stems))}."
             txt += f" We need: {_polarization_cases}."
             raise DataChannelError(txt)
-        for pure_path in dir_files:
-            if pure_path.stem in _polarization_cases:
-                pure_channel_store[pure_path.stem] = _PureDataChannel(
-                    pure_path,
-                    self.decay_names,
-                    ignore_limited_mc_statistics_bias,
-                    allow_zero_signal=True,
-                )
+        for pol in _polarization_cases:
+            pure_channel_store[pol] = _PureDataChannel(
+                file_stems[pol],
+                self.decay_names,
+                ignore_limited_mc_statistics_bias,
+                allow_zero_signal=True,
+            )
         return pure_channel_store
 
     @property

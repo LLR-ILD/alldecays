@@ -85,8 +85,9 @@ class _PureDataChannel:
                 inplace=True,
             )
 
-    def _get_dataframe(self):
-        csv_path = Path(self._channel_path)
+    def _get_dataframe(self, csv_path=None):
+        if csv_path is None:
+            csv_path = Path(self._channel_path)
         if csv_path.is_dir():
             dir_files = list(csv_path.glob("*.csv"))
             if len(dir_files) == 1:
@@ -115,7 +116,7 @@ class _PureDataChannel:
                 columns=df.columns,
                 index=self.decay_names,
             )
-            df = df.append(zero_signal_rows, verify_integrity=True)
+            df = pd.concat([df, zero_signal_rows], verify_integrity=True)
 
         if not set(self.decay_names).issubset(df.index):
             txt = "Not all decay names were found in the channel:"
@@ -175,13 +176,24 @@ class _PureDataChannel:
         return proba
 
     def _get_probabilities(self, df):
+        ch_path = Path(self._channel_path)
         for required_column in [cross_section_column, unselected_column]:
             if required_column not in df.columns:
                 txt = f"Required data column is missing: {required_column}. "
-                txt += f"File: {self._channel_path}."
+                txt += f"File: {ch_path}."
                 raise Exception(txt)
         counts_only = df[[c for c in df.columns if c != cross_section_column]]
-        if self._ignore_limited_mc_statistics_bias:
+        if ch_path.stem.startswith("train_"):
+            test_path = ch_path.parent / ch_path.name.replace("train_", "test_")
+            test_counts = self._get_dataframe(test_path)[counts_only.columns]
+            if self._ignore_limited_mc_statistics_bias:
+                counts_only = counts_only.add(test_counts)
+                train_proba = self._get_probabilities_from_counts(counts_only)
+                test_proba = train_proba
+            else:
+                train_proba = self._get_probabilities_from_counts(counts_only)
+                test_proba = self._get_probabilities_from_counts(test_counts)
+        elif self._ignore_limited_mc_statistics_bias:
             train_proba = self._get_probabilities_from_counts(counts_only)
             test_proba = train_proba
         else:
