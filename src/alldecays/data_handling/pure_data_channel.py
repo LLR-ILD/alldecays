@@ -105,6 +105,15 @@ class _PureDataChannel:
             raise NotImplementedError(csv_path)
 
         df = pd.read_csv(csv_path, index_col=0)
+        if csv_path.stem.startswith("train_"):
+            test_path = csv_path.parent / csv_path.name.replace("train_", "test_")
+            test_df = pd.read_csv(test_path, index_col=0)
+            zero_cols = [c for c in test_df.columns if c not in bookkeeping_columns]
+            rows_missing_train = [i for i in test_df.index if i not in df.index]
+            if len(rows_missing_train) > 0:
+                rows_from_test = test_df.loc[rows_missing_train, :]
+                rows_from_test[zero_cols] = 0
+                df = pd.concat([df, rows_from_test])
         df = self._order_processes(df)
         return df
 
@@ -187,7 +196,7 @@ class _PureDataChannel:
             test_path = ch_path.parent / ch_path.name.replace("train_", "test_")
             test_counts = self._get_dataframe(test_path)[counts_only.columns]
             if self._ignore_limited_mc_statistics_bias:
-                counts_only = counts_only.add(test_counts)
+                counts_only = counts_only.add(test_counts, fill_value=0)
                 train_proba = self._get_probabilities_from_counts(counts_only)
                 test_proba = train_proba
             else:
