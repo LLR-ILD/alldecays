@@ -182,6 +182,23 @@ class _DataChannel:
             )
         self._decay_names = new_names
 
+    def drop_bkg(self, bkg_names):
+        old_bkg_names = self.bkg_names
+        if isinstance(bkg_names, str):
+            bkg_names = [bkg_names]
+        if not set(bkg_names).issubset(old_bkg_names):
+            missing_bkg = set(bkg_names) - set(old_bkg_names)
+            raise Exception(f"{missing_bkg} bkg not found.")
+        for pc in self._pure_channels.values():
+            pure_names = pc.mc_matrix.columns
+            pure_bkg_names = [n for n in pure_names if n not in self.decay_names]
+            pure_drop_names = [n for n in bkg_names if n in pure_bkg_names]
+            drop_ids = [pure_bkg_names.index(name) for name in pure_drop_names]
+            pc._data_faker.drop(columns=pure_drop_names, inplace=True, errors="ignore")
+            pc.mc_matrix.drop(columns=pure_drop_names, inplace=True, errors="ignore")
+            pc.bkg_cs_default = np.delete(pc.bkg_cs_default, drop_ids)
+        self._set_polarization_dependent_values()
+
     @property
     def bkg_names(self):
         return [n for n in self.mc_matrix.columns if n not in self.decay_names]
